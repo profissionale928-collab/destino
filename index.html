@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Finalizado - Detalhes</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #004a99;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .item-carrinho {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .carrinho-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+        .item-info {
+            flex-grow: 1;
+        }
+        .item-info strong {
+            display: block;
+            font-size: 1.1em;
+            color: #004a99;
+        }
+        .item-info span {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .item-preco {
+            text-align: right;
+            font-size: 1.2em;
+            color: #d9534f;
+            font-weight: 700;
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 50px;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Detalhes do Pedido Finalizado</h1>
+    <div id="carrinho-detalhes">
+        <!-- Detalhes do carrinho serão inseridos aqui pelo JavaScript -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const carrinhoDetalhesEl = document.getElementById('carrinho-detalhes');
+        const carrinhoJSON = localStorage.getItem('carrinho');
+        
+        if (carrinhoJSON) {
+            try {
+                const carrinho = JSON.parse(carrinhoJSON);
+                
+                if (carrinho.length > 0) {
+                    let htmlContent = '';
+                    let totalGeral = 0;
+
+                    carrinho.forEach(item => {
+                        const subtotal = item.preco * item.quantidade;
+                        totalGeral += subtotal;
+
+                        htmlContent += `
+                            <div class="item-carrinho">
+                                <img src="${item.imagem_url}" alt="${item.nome}" class="carrinho-img">
+                                <div class="item-info">
+                                    <strong>${item.nome} (${item.modelo})</strong>
+                                    <span>Quantidade: ${item.quantidade}</span>
+                                </div>
+                                <div class="item-preco">
+                                    R$ ${subtotal.toFixed(2).replace('.', ',')}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    htmlContent += `
+                        <div class="item-carrinho" style="justify-content: space-between; background-color: #e6f0ff; font-size: 1.3em;">
+                            <strong>TOTAL GERAL:</strong>
+                            <span class="item-preco" style="color: #004a99;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    `;
+
+                    carrinhoDetalhesEl.innerHTML = htmlContent;
+                    
+                    // Opcional: Limpar o LocalStorage após a exibição (se for um pedido único)
+                    // localStorage.removeItem('carrinho');
+
+                } else {
+                    carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">O carrinho estava vazio ao finalizar o pedido.</div>';
+                }
+            } catch (e) {
+                carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">Erro ao processar os dados do carrinho.</div>';
+                console.error("Erro ao parsear JSON do carrinho:", e);
+            }
+        } else {
+            carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">Nenhum dado de carrinho encontrado no LocalStorage.</div>';
+        }
+    });
+</script>
+
+</body>
+</html>
