@@ -3,135 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedido Finalizado - Detalhes</title>
+    <title>Checkout - Confirmação do Pedido</title>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
             padding: 20px;
+            color: #333;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
             background-color: #fff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #004a99;
-            border-bottom: 2px solid #007bff;
+            color: #0056b3;
+            border-bottom: 2px solid #0056b3;
             padding-bottom: 10px;
             margin-bottom: 20px;
         }
+        h2 {
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
         .item-carrinho {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            background-color: #fdfdfd;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ccc;
         }
-        .carrinho-img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-right: 15px;
-            border-radius: 5px;
+        .item-carrinho:last-child {
+            border-bottom: none;
         }
         .item-info {
+            display: flex;
+            align-items: center;
             flex-grow: 1;
         }
-        .item-info strong {
-            display: block;
-            font-size: 1.1em;
-            color: #004a99;
+        .carrinho-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-right: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
         }
-        .item-info span {
-            color: #666;
-            font-size: 0.9em;
+        .item-nome {
+            font-weight: bold;
         }
-        .item-preco {
-            text-align: right;
+        .item-quantidade {
+            margin-right: 20px;
+            color: #555;
+        }
+        .total-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px solid #0056b3;
+            display: flex;
+            justify-content: space-between;
             font-size: 1.2em;
-            color: #d9534f;
-            font-weight: 700;
+            font-weight: bold;
         }
-        .empty-cart {
+        .carrinho-vazio {
             text-align: center;
             padding: 50px;
-            border: 1px dashed #ccc;
-            border-radius: 8px;
             color: #888;
+            font-style: italic;
+        }
+        .btn-finalizar {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #25d366; /* Cor do WhatsApp */
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        .btn-finalizar:hover {
+            background-color: #128c7e;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Detalhes do Pedido Finalizado</h1>
-    <div id="carrinho-detalhes">
-        <!-- Detalhes do carrinho serão inseridos aqui pelo JavaScript -->
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const carrinhoDetalhesEl = document.getElementById('carrinho-detalhes');
-        const carrinhoJSON = localStorage.getItem('carrinho');
+    <div class="container">
+        <h1>Confirmação do Pedido</h1>
         
-        if (carrinhoJSON) {
-            try {
-                const carrinho = JSON.parse(carrinhoJSON);
-                
-                if (carrinho.length > 0) {
-                    let htmlContent = '';
-                    let totalGeral = 0;
+        <div id="carrinho-vazio" class="carrinho-vazio" style="display: none;">
+            Seu carrinho está vazio. Volte à loja para adicionar produtos.
+        </div>
 
-                    carrinho.forEach(item => {
-                        const subtotal = item.preco * item.quantidade;
-                        totalGeral += subtotal;
+        <div id="itens-carrinho">
+            <!-- Itens do carrinho serão injetados aqui -->
+        </div>
 
-                        htmlContent += `
-                            <div class="item-carrinho">
-                                <img src="${item.imagem_url}" alt="${item.nome}" class="carrinho-img">
-                                <div class="item-info">
-                                    <strong>${item.nome} (${item.modelo})</strong>
-                                    <span>Quantidade: ${item.quantidade}</span>
-                                </div>
-                                <div class="item-preco">
-                                    R$ ${subtotal.toFixed(2).replace('.', ',')}
-                                </div>
-                            </div>
-                        `;
-                    });
+        <div class="total-container">
+            <span>Total dos Produtos:</span>
+            <span id="valor-total">R$ 0,00</span>
+        </div>
 
-                    htmlContent += `
-                        <div class="item-carrinho" style="justify-content: space-between; background-color: #e6f0ff; font-size: 1.3em;">
-                            <strong>TOTAL GERAL:</strong>
-                            <span class="item-preco" style="color: #004a99;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</span>
-                        </div>
-                    `;
+        <h2>Próximos Passos</h2>
+        <p>Seus itens foram carregados com sucesso. Para finalizar seu pedido, clique no botão abaixo para iniciar a conversa via WhatsApp com um de nossos atendentes. Ele confirmará o estoque, calculará o frete e o valor final.</p>
 
-                    carrinhoDetalhesEl.innerHTML = htmlContent;
-                    
-                    // Opcional: Limpar o LocalStorage após a exibição (se for um pedido único)
-                    // localStorage.removeItem('carrinho');
+        <button id="btn-finalizar-whatsapp" class="btn-finalizar">
+            Finalizar Pedido via WhatsApp
+        </button>
+    </div>
 
-                } else {
-                    carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">O carrinho estava vazio ao finalizar o pedido.</div>';
-                }
-            } catch (e) {
-                carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">Erro ao processar os dados do carrinho.</div>';
-                console.error("Erro ao parsear JSON do carrinho:", e);
+    <script>
+        // --- CATÁLOGO DE PEÇAS (CÓPIA DO SITE ORIGINAL) ---
+        // ESSENCIAL: Este catálogo deve ser idêntico ao do site de origem para que a reconstrução do carrinho funcione.
+        const catalogoPecas=[
+            // Baterias Moura de Exemplo
+            {id: 101, nome: "Moura M50ED - 50Ah", preco: 349.90, preco_de: 399.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 50Ah, ideal para carros populares com baixa demanda elétrica. Livre de manutenção, 18 meses de garantia."},
+            {id: 102, nome: "Moura M60AD - 60Ah", preco: 499.90, preco_de: 549.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 60Ah, alta performance e durabilidade. Indicada para veículos médios e com equipamentos eletrônicos."},
+            {id: 103, nome: "Moura M70AE - 70Ah", preco: 619.90, preco_de: 689.90, modelo: "Automotiva", estoque: 32, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 70Ah, excelente para veículos de grande porte, SUVs e picapes. Maior poder de arranque e resistência."},
+            {id: 104, nome: "Moura Moto MA5-D - 5Ah", preco: 189.90, preco_de: 219.90, modelo: "Moto", estoque: 21, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura para motos 5Ah, tecnologia AGM/VRLA. Ideal para motos de baixa cilindrada. Pronta para uso."},
+            {id: 105, nome: "Moura Moto MA9-E - 9Ah", preco: 279.90, preco_de: 319.90, modelo: "Moto", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura para motos 9Ah, maior capacidade e durabilidade. Indicada para motos de média e alta cilindrada."},
+            {id: 106, nome: "Moura Estacionária Clean 100Ah", preco: 1250.00, preco_de: 1350.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura Estacionária 100Ah, para sistemas de energia solar, no-breaks e telecomunicações. Ciclo profundo e longa vida útil."},
+            {id: 107, nome: "Moura M48FD - 48Ah", preco: 399.90, preco_de: 439.90, modelo: "Automotiva", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura 48Ah, excelente custo-benefício para veículos compactos e sedans."},
+            {id: 108, nome: "Moura M80AD - 80Ah", preco: 750.00, preco_de: 820.00, modelo: "Automotiva", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura 80Ah, máxima potência para veículos com alta exigência elétrica."},
+            {id: 109, nome: "Moura Estacionária Clean 60Ah", preco: 890.00, preco_de: 950.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura Estacionária 60Ah, ideal para no-breaks e sistemas de segurança."},
+            {id: 110, nome: "Moura Moto MA7-D - 7Ah", preco: 229.90, preco_de: 259.90, modelo: "Moto", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura para motos 7Ah, confiabilidade e desempenho para o dia a dia."},
+            // O item 101 aparece duplicado no código original, mantendo a duplicidade aqui para consistência
+            {id: 101, nome: "Moura M40FD - 40Ah", preco: 349.90, preco_de: 389.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 40Ah, ideal para carros populares com baixa demanda elétrica. Livre de manutenção, 18 meses de garantia."},
+        ];
+        
+        let carrinho = []; // Variável global para armazenar os itens do carrinho carregados
+
+        // --- ELEMENTOS DOM ---
+        const itensCarrinhoEl = document.getElementById('itens-carrinho');
+        const valorTotalEl = document.getElementById('valor-total');
+        const carrinhoVazioEl = document.getElementById('carrinho-vazio');
+        const btnFinalizarWhatsAppEl = document.getElementById('btn-finalizar-whatsapp');
+
+        // --- FUNÇÕES DE LÓGICA ---
+
+        function deserializarCarrinho() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const carrinhoSerializado = urlParams.get('carrinho');
+            
+            if (!carrinhoSerializado) {
+                return; // Não há dados de carrinho na URL
             }
-        } else {
-            carrinhoDetalhesEl.innerHTML = '<div class="empty-cart">Nenhum dado de carrinho encontrado no LocalStorage.</div>';
+            
+            try {
+                // 1. Decodifica de Base64
+                const jsonString = atob(carrinhoSerializado);
+                // 2. Converte de JSON para objeto
+                const itensSimples = JSON.parse(jsonString);
+                
+                // 3. Reconstrói o objeto 'carrinho' completo
+                carrinho = itensSimples.map(itemSimples => {
+                    // Busca no catálogo pelo ID. Nota: O catálogo original tem IDs duplicados (101),
+                    // mas para fins de checkout, o primeiro match é suficiente.
+                    const produtoCompleto = catalogoPecas.find(p => p.id === itemSimples.id);
+                    if (produtoCompleto) {
+                        return {
+                            id: produtoCompleto.id,
+                            nome: produtoCompleto.nome,
+                            preco: produtoCompleto.preco,
+                            quantidade: itemSimples.q,
+                            modelo: produtoCompleto.modelo,
+                            imagem_url: produtoCompleto.imagem_url
+                        };
+                    }
+                    return null; // Ignora itens que não estão no catálogo
+                }).filter(item => item !== null);
+                
+            } catch (e) {
+                console.error('Erro ao deserializar o carrinho da URL:', e);
+                carrinho = []; // Limpa o carrinho em caso de erro
+            }
         }
-    });
-</script>
 
+        function renderizarCarrinho() {
+            itensCarrinhoEl.innerHTML = '';
+            let total = 0;
+
+            if (carrinho.length === 0) {
+                carrinhoVazioEl.style.display = 'block';
+                btnFinalizarWhatsAppEl.disabled = true;
+            } else {
+                carrinhoVazioEl.style.display = 'none';
+                btnFinalizarWhatsAppEl.disabled = false;
+
+                carrinho.forEach(item => {
+                    const subtotal = item.preco * item.quantidade;
+                    total += subtotal;
+                    
+                    const itemEl = document.createElement('div');
+                    itemEl.classList.add('item-carrinho');
+                    itemEl.innerHTML = `
+                        <div class="item-info">
+                            <img src="${item.imagem_url}" alt="${item.nome}" class="carrinho-img">
+                            <div>
+                                <span class="item-nome">${item.nome}</span>
+                                <p style="margin: 0; font-size: 0.9em; color: #666;">(${item.modelo})</p>
+                            </div>
+                        </div>
+                        <span class="item-quantidade">${item.quantidade}x</span>
+                        <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong>
+                    `;
+                    itensCarrinhoEl.appendChild(itemEl);
+                });
+            }
+            valorTotalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+
+        function finalizarPedidoWhatsApp() {
+            if (carrinho.length === 0) {
+                alert('Seu carrinho está vazio.');
+                return;
+            }
+
+            const itensMensagem = carrinho.map((i, idx) =>
+                `*${idx + 1}.* ${i.nome} (${i.modelo})\n    *Qtde:* ${i.quantidade} | *Subtotal:* R$ ${(i.preco * i.quantidade).toFixed(2).replace('.', ',')}`
+            ).join('\n');
+
+            const valorTotalItens = carrinho.reduce((a, i) => a + (i.preco * i.quantidade), 0);
+            
+            const mensagemWhatsapp = encodeURIComponent(
+                `*PEDIDO DE CHECKOUT (VIA LINK DE REDIRECIONAMENTO)*\n\n` +
+                `*ITENS DO PEDIDO:*\n${itensMensagem}\n\n` +
+                `*TOTAL ESTIMADO DOS PRODUTOS:* R$ ${valorTotalItens.toFixed(2).replace('.', ',')}\n\n` +
+                `*Atenção:* Por favor, confirme o estoque, solicite os dados do cliente e calcule o frete.`
+            );
+
+            // Use o mesmo número de WhatsApp do código original
+            const numeroAtendente = '5511960720059'; 
+            const linkWhatsApp = `https://api.whatsapp.com/send?phone=${numeroAtendente}&text=${mensagemWhatsapp}`;
+            
+            window.open(linkWhatsApp, '_blank');
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            deserializarCarrinho(); // Carrega o carrinho da URL
+            renderizarCarrinho();   // Exibe os itens
+            btnFinalizarWhatsAppEl.addEventListener('click', finalizarPedidoWhatsApp);
+        });
+    </script>
 </body>
 </html>
