@@ -2,59 +2,56 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Checkout - Confirmação do Pedido</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
             min-height: 100vh;
-            padding: 32px 16px;
+            padding: 16px;
             color: #1f2937;
         }
 
         .container {
-            max-width: 1024px;
+            max-width: 100%;
             margin: 0 auto;
         }
 
         .header {
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
-            font-size: 2.25rem;
+            font-size: 1.75rem;
             font-weight: 700;
             color: #111827;
             margin-bottom: 8px;
+            word-break: break-word;
         }
 
         .header p {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #6b7280;
         }
 
         .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                order: -1;
-            }
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .card {
@@ -62,16 +59,17 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            width: 100%;
         }
 
         .card-header {
-            padding: 16px 24px;
+            padding: 14px 16px;
             color: white;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 1.125rem;
+            font-size: 1rem;
         }
 
         .card-header.blue {
@@ -91,24 +89,21 @@
         }
 
         .card-content {
-            padding: 24px;
+            padding: 16px;
         }
 
         .empty-cart {
             text-align: center;
-            padding: 48px 24px;
+            padding: 32px 16px;
             color: #9ca3af;
             font-style: italic;
-        }
-
-        .cart-items {
-            space-y: 16px;
+            font-size: 0.95rem;
         }
 
         .cart-item {
             display: flex;
-            gap: 16px;
-            padding: 16px 0;
+            gap: 12px;
+            padding: 12px 0;
             border-bottom: 1px solid #e5e7eb;
         }
 
@@ -117,64 +112,70 @@
         }
 
         .cart-item-img {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             object-fit: contain;
             border-radius: 8px;
             background: #f3f4f6;
-            padding: 8px;
+            padding: 6px;
             flex-shrink: 0;
         }
 
         .cart-item-info {
             flex: 1;
+            min-width: 0;
         }
 
         .cart-item-name {
             font-weight: 600;
             color: #111827;
             margin-bottom: 4px;
+            font-size: 0.9rem;
+            word-break: break-word;
         }
 
         .cart-item-model {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: #6b7280;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .cart-item-qty {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: #4b5563;
         }
 
         .cart-item-price {
             text-align: right;
+            flex-shrink: 0;
         }
 
         .cart-item-subtotal {
             font-weight: 700;
             color: #2563eb;
-            font-size: 1.125rem;
+            font-size: 1rem;
         }
 
         .cart-item-unit {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #9ca3af;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .payment-option {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 16px;
+            padding: 14px;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
+            background: white;
+            min-height: 60px;
         }
 
-        .payment-option:hover {
+        .payment-option:active {
             background: #f9fafb;
             border-color: #d1d5db;
         }
@@ -182,23 +183,30 @@
         .payment-option input[type="radio"] {
             margin-top: 4px;
             cursor: pointer;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+            accent-color: #2563eb;
+        }
+
+        .payment-option-text {
+            flex: 1;
         }
 
         .payment-option-text h3 {
             font-weight: 600;
             color: #111827;
             margin-bottom: 4px;
+            font-size: 0.95rem;
         }
 
         .payment-option-text p {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: #6b7280;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
@@ -206,17 +214,19 @@
             font-weight: 600;
             color: #111827;
             margin-bottom: 8px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 16px;
             transition: all 0.2s;
             font-family: inherit;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .form-group input:focus {
@@ -234,13 +244,7 @@
         .form-group-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        @media (max-width: 640px) {
-            .form-group-row {
-                grid-template-columns: 1fr;
-            }
+            gap: 12px;
         }
 
         .cep-input-group {
@@ -253,7 +257,7 @@
         }
 
         .cep-input-group button {
-            padding: 12px 24px;
+            padding: 14px 20px;
             background: #2563eb;
             color: white;
             border: none;
@@ -261,16 +265,23 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 48px;
         }
 
-        .cep-input-group button:hover:not(:disabled) {
+        .cep-input-group button:active:not(:disabled) {
             background: #1d4ed8;
+            transform: scale(0.98);
         }
 
         .cep-input-group button:disabled {
             background: #9ca3af;
             cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .cep-input-group button.loading {
@@ -294,12 +305,13 @@
         }
 
         .alert {
-            padding: 12px 16px;
+            padding: 12px 14px;
             border-radius: 8px;
             margin-bottom: 16px;
             display: flex;
             gap: 12px;
             align-items: flex-start;
+            font-size: 0.9rem;
         }
 
         .alert.error {
@@ -311,23 +323,24 @@
         .alert-icon {
             flex-shrink: 0;
             margin-top: 2px;
+            font-size: 1.2rem;
         }
 
         .address-fields {
-            padding-top: 20px;
+            padding-top: 16px;
             border-top: 1px solid #e5e7eb;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         .summary-section {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 0.95rem;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
         }
 
         .summary-row span:first-child {
@@ -341,15 +354,15 @@
 
         .summary-divider {
             border-top: 1px solid #e5e7eb;
-            padding-top: 12px;
-            margin-top: 12px;
+            padding-top: 10px;
+            margin-top: 10px;
         }
 
         .summary-total {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.25rem;
+            font-size: 1.1rem;
             font-weight: 700;
         }
 
@@ -368,48 +381,121 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 20px;
+            margin-top: 16px;
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .btn-whatsapp:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px rgba(16, 185, 129, 0.3);
+        .btn-whatsapp:active:not(:disabled) {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale(0.98);
         }
 
         .btn-whatsapp:disabled {
             background: #d1d5db;
             cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .summary-note {
             font-size: 0.75rem;
             color: #6b7280;
             text-align: center;
-            margin-top: 12px;
+            margin-top: 10px;
+            line-height: 1.4;
         }
 
-        .sidebar {
-            grid-column: 3;
-        }
+        /* Melhorias para touch */
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+                padding-bottom: 24px;
+            }
 
-        .sticky-card {
-            position: sticky;
-            top: 32px;
-        }
+            .header {
+                margin-bottom: 20px;
+            }
 
-        @media (max-width: 1024px) {
-            .sticky-card {
-                position: static;
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .main-grid {
+                gap: 12px;
+            }
+
+            .card-content {
+                padding: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 14px;
+            }
+
+            .form-group-row {
+                gap: 10px;
+            }
+
+            .cart-item {
+                gap: 10px;
+                padding: 10px 0;
+            }
+
+            .cart-item-img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .payment-option {
+                padding: 12px;
+                min-height: 56px;
+            }
+
+            .summary-row {
+                margin-bottom: 8px;
+                font-size: 0.85rem;
+            }
+
+            .summary-total {
+                font-size: 1rem;
             }
         }
 
-        .content-col {
-            grid-column: span 2;
+        /* Landscape mode */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 8px;
+            }
+
+            .header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 4px;
+            }
+
+            .card-content {
+                padding: 12px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;
+            }
         }
 
-        @media (max-width: 1024px) {
-            .content-col {
-                grid-column: span 1;
+        /* Prevenir zoom em inputs */
+        input {
+            font-size: 16px !important;
+        }
+
+        /* Safe area para notch */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
             }
         }
     </style>
@@ -419,133 +505,130 @@
         <!-- Header -->
         <div class="header">
             <h1>Confirmação do Pedido</h1>
-            <p>Revise seus itens e complete o endereço de entrega</p>
+            <p>Revise seus itens e complete o endereço</p>
         </div>
 
         <!-- Main Grid -->
         <div class="main-grid">
-            <!-- Content Column -->
-            <div class="content-col">
-                <!-- Produtos Card -->
-                <div class="card">
-                    <div class="card-header blue">
-                        <span>📦</span> Produtos
+            <!-- Produtos Card -->
+            <div class="card">
+                <div class="card-header blue">
+                    <span>📦</span> Produtos
+                </div>
+                <div class="card-content">
+                    <div id="cart-items-container">
+                        <div class="empty-cart">Seu carrinho está vazio</div>
                     </div>
-                    <div class="card-content">
-                        <div id="cart-items-container">
-                            <div class="empty-cart">Seu carrinho está vazio</div>
+                </div>
+            </div>
+
+            <!-- Resumo do Pedido Card (Mobile First) -->
+            <div class="card">
+                <div class="card-header dark">
+                    Resumo do Pedido
+                </div>
+                <div class="card-content">
+                    <div class="summary-section">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Frete</span>
+                            <span>A calcular</span>
+                        </div>
+                        <div class="summary-divider">
+                            <div class="summary-total">
+                                <span>Total</span>
+                                <span id="total">R$ 0,00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Método de Pagamento Card -->
-                <div class="card" style="margin-top: 24px;">
-                    <div class="card-header green">
-                        <span>💳</span> Método de Pagamento
-                    </div>
-                    <div class="card-content">
-                        <label class="payment-option">
-                            <input type="radio" name="payment" value="cash" checked>
-                            <div class="payment-option-text">
-                                <h3>Pagamento após a entrega</h3>
-                                <p>Pague quando receber o produto</p>
-                            </div>
-                        </label>
-                    </div>
+            <!-- Método de Pagamento Card -->
+            <div class="card">
+                <div class="card-header green">
+                    <span>💳</span> Método de Pagamento
                 </div>
+                <div class="card-content">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="cash" checked>
+                        <div class="payment-option-text">
+                            <h3>Pagamento após a entrega</h3>
+                            <p>Pague quando receber o produto</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
 
-                <!-- Opções de Envio Card -->
-                <div class="card" style="margin-top: 24px;">
-                    <div class="card-header purple">
-                        <span>📍</span> Opções de Envio
+            <!-- Opções de Envio Card -->
+            <div class="card">
+                <div class="card-header purple">
+                    <span>📍</span> Opções de Envio
+                </div>
+                <div class="card-content">
+                    <!-- CEP Input -->
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <div class="cep-input-group">
+                            <input 
+                                type="text" 
+                                id="cep" 
+                                placeholder="00000-000" 
+                                maxlength="9"
+                                inputmode="numeric"
+                            >
+                            <button id="btn-search-cep">Buscar</button>
+                        </div>
                     </div>
-                    <div class="card-content">
-                        <!-- CEP Input -->
-                        <div class="form-group">
-                            <label for="cep">CEP</label>
-                            <div class="cep-input-group">
-                                <input 
-                                    type="text" 
-                                    id="cep" 
-                                    placeholder="00000-000" 
-                                    maxlength="9"
-                                >
-                                <button id="btn-search-cep">Buscar</button>
-                            </div>
-                        </div>
 
-                        <!-- Error Alert -->
-                        <div id="cep-error" class="alert error" style="display: none;">
-                            <span class="alert-icon">⚠️</span>
-                            <span id="error-message"></span>
-                        </div>
+                    <!-- Error Alert -->
+                    <div id="cep-error" class="alert error" style="display: none;">
+                        <span class="alert-icon">⚠️</span>
+                        <span id="error-message"></span>
+                    </div>
 
-                        <!-- Address Fields (Hidden by default) -->
-                        <div id="address-fields" class="address-fields" style="display: none;">
-                            <div class="form-group-row">
-                                <div class="form-group">
-                                    <label for="logradouro">Logradouro</label>
-                                    <input type="text" id="logradouro" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="bairro">Bairro</label>
-                                    <input type="text" id="bairro" disabled>
-                                </div>
-                            </div>
-
-                            <div class="form-group-row">
-                                <div class="form-group">
-                                    <label for="uf">Estado (UF)</label>
-                                    <input type="text" id="uf" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="numero">Número da Residência *</label>
-                                    <input type="text" id="numero" placeholder="Ex: 123">
-                                </div>
-                            </div>
-
+                    <!-- Address Fields -->
+                    <div id="address-fields" class="address-fields" style="display: none;">
+                        <div class="form-group-row">
                             <div class="form-group">
-                                <label for="complemento">Complemento (Opcional)</label>
-                                <input type="text" id="complemento" placeholder="Ex: Apto 101, Bloco A">
+                                <label for="logradouro">Logradouro</label>
+                                <input type="text" id="logradouro" disabled>
                             </div>
+                            <div class="form-group">
+                                <label for="bairro">Bairro</label>
+                                <input type="text" id="bairro" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label for="uf">Estado (UF)</label>
+                                <input type="text" id="uf" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="numero">Número *</label>
+                                <input type="text" id="numero" placeholder="Ex: 123" inputmode="numeric">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="complemento">Complemento</label>
+                            <input type="text" id="complemento" placeholder="Ex: Apto 101">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="sidebar">
-                <div class="card sticky-card">
-                    <div class="card-header dark">
-                        Resumo do Pedido
-                    </div>
-                    <div class="card-content">
-                        <div class="summary-section">
-                            <div class="summary-row">
-                                <span>Subtotal</span>
-                                <span id="subtotal">R$ 0,00</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Frete</span>
-                                <span>A calcular</span>
-                            </div>
-                            <div class="summary-divider">
-                                <div class="summary-total">
-                                    <span>Total</span>
-                                    <span id="total">R$ 0,00</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button id="btn-whatsapp" class="btn-whatsapp" disabled>
-                            Finalizar via WhatsApp
-                        </button>
-                        <p class="summary-note">
-                            Você será redirecionado para o WhatsApp para confirmar seu pedido
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <!-- Botão WhatsApp -->
+            <button id="btn-whatsapp" class="btn-whatsapp" disabled>
+                Finalizar via WhatsApp
+            </button>
+            <p class="summary-note">
+                Você será redirecionado para o WhatsApp para confirmar seu pedido
+            </p>
         </div>
     </div>
 
@@ -593,6 +676,9 @@
 
         // Buscar CEP
         btnSearchCep.addEventListener('click', buscarCep);
+        cepInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscarCep();
+        });
 
         async function buscarCep() {
             const cepLimpo = cepInput.value.replace(/\D/g, '');
@@ -604,7 +690,7 @@
 
             btnSearchCep.disabled = true;
             btnSearchCep.classList.add('loading');
-            btnSearchCep.innerHTML = '<span class="spinner"></span> Buscando...';
+            btnSearchCep.innerHTML = '<span class="spinner"></span>';
             cepError.style.display = 'none';
 
             try {
@@ -630,6 +716,11 @@
                 preencherEndereco();
                 addressFields.style.display = 'block';
                 cepError.style.display = 'none';
+                
+                // Scroll para campos de endereço
+                setTimeout(() => {
+                    document.getElementById('numero').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
             } catch (error) {
                 mostrarErro('Erro ao buscar CEP. Tente novamente.');
                 console.error('Erro:', error);
@@ -718,7 +809,7 @@
                     <div class="cart-item-info">
                         <div class="cart-item-name">${item.nome}</div>
                         <div class="cart-item-model">${item.modelo}</div>
-                        <div class="cart-item-qty">Quantidade: ${item.quantidade}x</div>
+                        <div class="cart-item-qty">Qtde: ${item.quantidade}x</div>
                     </div>
                     <div class="cart-item-price">
                         <div class="cart-item-subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</div>
