@@ -872,6 +872,18 @@
         const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
 
         // Lógica de Seleção de Complemento
+        document.querySelectorAll('#complemento-options-container .payment-option').forEach(label => {
+            label.addEventListener('click', (e) => {
+                const radio = label.querySelector('input[type="radio"]');
+                if (radio && !radio.checked) {
+                    radio.checked = true;
+                    // Disparar o evento 'change' manualmente para garantir que a lógica de seleção seja executada
+                    const changeEvent = new Event('change', { bubbles: true });
+                    radio.dispatchEvent(changeEvent);
+                }
+            });
+        });
+
         complementoOptionsContainer.addEventListener('change', (e) => {
             if (e.target.name === 'complemento-option') {
                 complementoSelecionado = e.target.value;
@@ -955,6 +967,12 @@
             }
         }
 
+        // Adicionar listener para garantir que a validação seja chamada após o preenchimento do número
+        document.getElementById('numero').addEventListener('input', (e) => {
+            endereco.numero = e.target.value;
+            validarFormulario();
+        });
+
         function mostrarErro(mensagem) {
             errorMessage.textContent = mensagem;
             cepError.style.display = 'flex';
@@ -977,21 +995,25 @@
             validarFormulario();
         });
 
-        document.getElementById('complemento').addEventListener('input', (e) => {
-            endereco.complemento = e.target.value;
-            validarFormulario();
-        });
+document.getElementById('complemento').addEventListener('input', (e) => {
+	            endereco.complemento = e.target.value;
+	            // Não é necessário chamar validarFormulario aqui, pois o complemento não é um campo obrigatório para prosseguir.
+	        });
 
-        // Validação do Formulário
-        function validarFormulario() {
-            const numeroValido = endereco.numero.trim() !== '';
-            const cepValido = endereco.cep.replace(/\D/g, '').length === 8;
-            const enderecoCompleto = endereco.logradouro.trim() !== '' && endereco.bairro.trim() !== '' && endereco.uf.trim() !== '';
-            const carrinhoNaoVazio = carrinho.length > 0;
-
-            const formValido = cepValido && enderecoCompleto && numeroValido && carrinhoNaoVazio;
-            btnProsseguir.disabled = !formValido;
-        }
+// Validação do Formulário
+	        function validarFormulario() {
+	            const numeroValido = document.getElementById('numero').value.trim() !== ''; // Usar o valor atual do campo
+	            const cepValido = endereco.cep.replace(/\D/g, '').length === 8;
+	            const enderecoCompleto = endereco.logradouro.trim() !== '' && endereco.bairro.trim() !== '' && endereco.uf.trim() !== '';
+	            const carrinhoNaoVazio = carrinho.length > 0;
+	            
+	            // Nova verificação: se uma opção de complemento (envio) foi selecionada
+	            const isComplementoSelected = complementoSelecionado !== null && complementoSelecionado !== undefined && complementoSelecionado !== '';
+	
+	            // O formulário é válido se: CEP, Endereço (logradouro, bairro, uf), Número, Carrinho não vazio E Opção de Envio selecionada
+	            const formValido = cepValido && enderecoCompleto && numeroValido && carrinhoNaoVazio && isComplementoSelected;
+	            btnProsseguir.disabled = !formValido;
+	        }
 
         // Deserializar carrinho da URL
         function deserializarCarrinho() {
@@ -1131,13 +1153,16 @@
             }
         });
 
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', () => {
-            deserializarCarrinho();
-            // Garante que a opção de complemento padrão esteja visualmente selecionada
-            document.querySelector(`label[data-valor="35.90"]`).classList.add('selected');
-            validarFormulario(); // Adicionado para validar o estado inicial
-        });
+// Inicializar
+	        document.addEventListener('DOMContentLoaded', () => {
+	            deserializarCarrinho();
+	            // Garante que a opção de complemento padrão esteja visualmente selecionada
+	            const defaultLabel = document.querySelector(`label[data-valor="35.90"]`);
+	            if (defaultLabel) {
+	                defaultLabel.classList.add('selected');
+	            }
+	            validarFormulario(); // Adicionado para validar o estado inicial
+	        });
     </script>
 </body>
 </html>
