@@ -84,12 +84,31 @@
             background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
         }
 
-        .card-header.dark {
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-        }
-
         .card-content {
             padding: 16px;
+        }
+
+        /* Bloco Produtos + Resumo */
+        .products-summary-block {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .products-section {
+            padding: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
+
+        .products-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
         }
 
         .empty-cart {
@@ -162,6 +181,63 @@
             margin-top: 2px;
         }
 
+        /* Resumo Section */
+        .summary-section {
+            padding: 16px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .summary-row span:first-child {
+            color: #6b7280;
+        }
+
+        .summary-row span:last-child {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .summary-divider {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .summary-total span:first-child {
+            color: #111827;
+        }
+
+        .summary-total span:last-child {
+            color: #2563eb;
+        }
+
+        /* Payment Option */
         .payment-option {
             display: flex;
             align-items: flex-start;
@@ -205,6 +281,7 @@
             color: #6b7280;
         }
 
+        /* Form Styles */
         .form-group {
             margin-bottom: 16px;
         }
@@ -332,44 +409,6 @@
             margin-top: 16px;
         }
 
-        .summary-section {
-            margin-bottom: 16px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        .summary-row span:first-child {
-            color: #6b7280;
-        }
-
-        .summary-row span:last-child {
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .summary-divider {
-            border-top: 1px solid #e5e7eb;
-            padding-top: 10px;
-            margin-top: 10px;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-
-        .summary-total span:last-child {
-            color: #2563eb;
-        }
-
         .btn-whatsapp {
             width: 100%;
             padding: 16px;
@@ -409,7 +448,7 @@
             line-height: 1.4;
         }
 
-        /* Melhorias para touch */
+        /* Responsive */
         @media (max-width: 640px) {
             body {
                 padding: 12px;
@@ -429,6 +468,14 @@
             }
 
             .card-content {
+                padding: 14px;
+            }
+
+            .products-section {
+                padding: 14px;
+            }
+
+            .summary-section {
                 padding: 14px;
             }
 
@@ -465,7 +512,6 @@
             }
         }
 
-        /* Landscape mode */
         @media (max-height: 600px) and (orientation: landscape) {
             body {
                 padding: 8px;
@@ -485,12 +531,10 @@
             }
         }
 
-        /* Prevenir zoom em inputs */
         input {
             font-size: 16px !important;
         }
 
-        /* Safe area para notch */
         @supports (padding: max(0px)) {
             body {
                 padding-left: max(12px, env(safe-area-inset-left));
@@ -510,38 +554,35 @@
 
         <!-- Main Grid -->
         <div class="main-grid">
-            <!-- Produtos Card -->
-            <div class="card">
-                <div class="card-header blue">
-                    <span>📦</span> Produtos
-                </div>
-                <div class="card-content">
+            <!-- Produtos + Resumo Unified Block -->
+            <div class="products-summary-block">
+                <!-- Produtos Section -->
+                <div class="products-section">
+                    <div class="products-header">
+                        <span>📦</span> Produtos
+                    </div>
                     <div id="cart-items-container">
                         <div class="empty-cart">Seu carrinho está vazio</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Resumo do Pedido Card (Mobile First) -->
-            <div class="card">
-                <div class="card-header dark">
-                    Resumo do Pedido
-                </div>
-                <div class="card-content">
-                    <div class="summary-section">
-                        <div class="summary-row">
-                            <span>Subtotal</span>
-                            <span id="subtotal">R$ 0,00</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Frete</span>
-                            <span>A calcular</span>
-                        </div>
-                        <div class="summary-divider">
-                            <div class="summary-total">
-                                <span>Total</span>
-                                <span id="total">R$ 0,00</span>
-                            </div>
+                <!-- Resumo Section -->
+                <div class="summary-section">
+                    <div class="summary-header">
+                        <span>📊</span> Resumo
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal">R$ 0,00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Frete</span>
+                        <span>A calcular</span>
+                    </div>
+                    <div class="summary-divider">
+                        <div class="summary-total">
+                            <span>Total</span>
+                            <span id="total">R$ 0,00</span>
                         </div>
                     </div>
                 </div>
