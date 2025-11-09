@@ -872,18 +872,6 @@
         const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
 
         // Lógica de Seleção de Complemento
-        document.querySelectorAll('#complemento-options-container .payment-option').forEach(label => {
-            label.addEventListener('click', () => {
-                const radio = label.querySelector('input[type="radio"]');
-                if (radio) {
-                    radio.checked = true;
-                    // Disparar o evento 'change' manualmente para garantir que a lógica de seleção seja executada
-                    const changeEvent = new Event('change', { bubbles: true });
-                    radio.dispatchEvent(changeEvent);
-                }
-            });
-        });
-
         complementoOptionsContainer.addEventListener('change', (e) => {
             if (e.target.name === 'complemento-option') {
                 complementoSelecionado = e.target.value;
@@ -892,6 +880,7 @@
                 });
                 e.target.closest('.payment-option').classList.add('selected');
                 atualizarTotais();
+                validarFormulario(); // Reavaliar o botão Prosseguir
             }
         });
 
@@ -1147,6 +1136,7 @@
             deserializarCarrinho();
             // Garante que a opção de complemento padrão esteja visualmente selecionada
             document.querySelector(`label[data-valor="35.90"]`).classList.add('selected');
+            validarFormulario(); // Adicionado para validar o estado inicial
         });
     </script>
 </body>
