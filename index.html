@@ -5,255 +5,785 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - Confirmação do Pedido</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+        * {
             margin: 0;
-            padding: 20px;
-            color: #333;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            min-height: 100vh;
+            padding: 32px 16px;
+            color: #1f2937;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 1024px;
             margin: 0 auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            color: #0056b3;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+
+        .header {
+            margin-bottom: 32px;
         }
-        h2 {
-            color: #333;
-            margin-top: 25px;
-            margin-bottom: 15px;
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
         }
-        .item-carrinho {
+
+        .header p {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 24px;
+            color: white;
+            font-weight: 600;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed #ccc;
+            gap: 8px;
+            font-size: 1.125rem;
         }
-        .item-carrinho:last-child {
-            border-bottom: none;
+
+        .card-header.blue {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
         }
-        .item-info {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
+
+        .card-header.green {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
         }
-        .carrinho-img {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-right: 15px;
-            border: 1px solid #eee;
-            border-radius: 4px;
+
+        .card-header.purple {
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
         }
-        .item-nome {
-            font-weight: bold;
+
+        .card-header.dark {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
         }
-        .item-quantidade {
-            margin-right: 20px;
-            color: #555;
+
+        .card-content {
+            padding: 24px;
         }
-        .total-container {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px solid #0056b3;
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        .carrinho-vazio {
+
+        .empty-cart {
             text-align: center;
-            padding: 50px;
-            color: #888;
+            padding: 48px 24px;
+            color: #9ca3af;
             font-style: italic;
         }
-        .btn-finalizar {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: #25d366; /* Cor do WhatsApp */
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 30px;
-            transition: background-color 0.3s;
+
+        .cart-items {
+            space-y: 16px;
         }
-        .btn-finalizar:hover {
-            background-color: #128c7e;
+
+        .cart-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #f3f4f6;
+            padding: 8px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-model {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-qty {
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+
+        .cart-item-price {
+            text-align: right;
+        }
+
+        .cart-item-subtotal {
+            font-weight: 700;
+            color: #2563eb;
+            font-size: 1.125rem;
+        }
+
+        .cart-item-unit {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .payment-option:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-top: 4px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .payment-option-text h3 {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .payment-option-text p {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group input:disabled {
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .form-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .form-group-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cep-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cep-input-group input {
+            flex: 1;
+        }
+
+        .cep-input-group button {
+            padding: 12px 24px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .cep-input-group button:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+
+        .cep-input-group button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .cep-input-group button.loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .address-fields {
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        .summary-section {
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+
+        .summary-row span:first-child {
+            color: #6b7280;
+        }
+
+        .summary-row span:last-child {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .summary-divider {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .summary-total span:last-child {
+            color: #2563eb;
+        }
+
+        .btn-whatsapp {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn-whatsapp:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-whatsapp:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        .summary-note {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .sidebar {
+            grid-column: 3;
+        }
+
+        .sticky-card {
+            position: sticky;
+            top: 32px;
+        }
+
+        @media (max-width: 1024px) {
+            .sticky-card {
+                position: static;
+            }
+        }
+
+        .content-col {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 1024px) {
+            .content-col {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>Confirmação do Pedido</h1>
-        
-        <div id="carrinho-vazio" class="carrinho-vazio" style="display: none;">
-            Seu carrinho está vazio. Volte à loja para adicionar produtos.
+        <!-- Header -->
+        <div class="header">
+            <h1>Confirmação do Pedido</h1>
+            <p>Revise seus itens e complete o endereço de entrega</p>
         </div>
 
-        <div id="itens-carrinho">
-            <!-- Itens do carrinho serão injetados aqui -->
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Content Column -->
+            <div class="content-col">
+                <!-- Produtos Card -->
+                <div class="card">
+                    <div class="card-header blue">
+                        <span>📦</span> Produtos
+                    </div>
+                    <div class="card-content">
+                        <div id="cart-items-container">
+                            <div class="empty-cart">Seu carrinho está vazio</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Método de Pagamento Card -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header green">
+                        <span>💳</span> Método de Pagamento
+                    </div>
+                    <div class="card-content">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="cash" checked>
+                            <div class="payment-option-text">
+                                <h3>Pagamento após a entrega</h3>
+                                <p>Pague quando receber o produto</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Opções de Envio Card -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header purple">
+                        <span>📍</span> Opções de Envio
+                    </div>
+                    <div class="card-content">
+                        <!-- CEP Input -->
+                        <div class="form-group">
+                            <label for="cep">CEP</label>
+                            <div class="cep-input-group">
+                                <input 
+                                    type="text" 
+                                    id="cep" 
+                                    placeholder="00000-000" 
+                                    maxlength="9"
+                                >
+                                <button id="btn-search-cep">Buscar</button>
+                            </div>
+                        </div>
+
+                        <!-- Error Alert -->
+                        <div id="cep-error" class="alert error" style="display: none;">
+                            <span class="alert-icon">⚠️</span>
+                            <span id="error-message"></span>
+                        </div>
+
+                        <!-- Address Fields (Hidden by default) -->
+                        <div id="address-fields" class="address-fields" style="display: none;">
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="logradouro">Logradouro</label>
+                                    <input type="text" id="logradouro" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bairro">Bairro</label>
+                                    <input type="text" id="bairro" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="uf">Estado (UF)</label>
+                                    <input type="text" id="uf" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="numero">Número da Residência *</label>
+                                    <input type="text" id="numero" placeholder="Ex: 123">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="complemento">Complemento (Opcional)</label>
+                                <input type="text" id="complemento" placeholder="Ex: Apto 101, Bloco A">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="card sticky-card">
+                    <div class="card-header dark">
+                        Resumo do Pedido
+                    </div>
+                    <div class="card-content">
+                        <div class="summary-section">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="subtotal">R$ 0,00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Frete</span>
+                                <span>A calcular</span>
+                            </div>
+                            <div class="summary-divider">
+                                <div class="summary-total">
+                                    <span>Total</span>
+                                    <span id="total">R$ 0,00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="btn-whatsapp" class="btn-whatsapp" disabled>
+                            Finalizar via WhatsApp
+                        </button>
+                        <p class="summary-note">
+                            Você será redirecionado para o WhatsApp para confirmar seu pedido
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="total-container">
-            <span>Total dos Produtos:</span>
-            <span id="valor-total">R$ 0,00</span>
-        </div>
-
-        <h2>Próximos Passos</h2>
-        <p>Seus itens foram carregados com sucesso. Para finalizar seu pedido, clique no botão abaixo para iniciar a conversa via WhatsApp com um de nossos atendentes. Ele confirmará o estoque, calculará o frete e o valor final.</p>
-
-        <button id="btn-finalizar-whatsapp" class="btn-finalizar">
-            Finalizar Pedido via WhatsApp
-        </button>
     </div>
 
     <script>
-        // --- CATÁLOGO DE PEÇAS (CÓPIA DO SITE ORIGINAL) ---
-        // ESSENCIAL: Este catálogo deve ser idêntico ao do site de origem para que a reconstrução do carrinho funcione.
-        const catalogoPecas=[
-            // Baterias Moura de Exemplo
-            {id: 101, nome: "Moura M50ED - 50Ah", preco: 349.90, preco_de: 399.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 50Ah, ideal para carros populares com baixa demanda elétrica. Livre de manutenção, 18 meses de garantia."},
-            {id: 102, nome: "Moura M60AD - 60Ah", preco: 499.90, preco_de: 549.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 60Ah, alta performance e durabilidade. Indicada para veículos médios e com equipamentos eletrônicos."},
-            {id: 103, nome: "Moura M70AE - 70Ah", preco: 619.90, preco_de: 689.90, modelo: "Automotiva", estoque: 32, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 70Ah, excelente para veículos de grande porte, SUVs e picapes. Maior poder de arranque e resistência."},
-            {id: 104, nome: "Moura Moto MA5-D - 5Ah", preco: 189.90, preco_de: 219.90, modelo: "Moto", estoque: 21, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura para motos 5Ah, tecnologia AGM/VRLA. Ideal para motos de baixa cilindrada. Pronta para uso."},
-            {id: 105, nome: "Moura Moto MA9-E - 9Ah", preco: 279.90, preco_de: 319.90, modelo: "Moto", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura para motos 9Ah, maior capacidade e durabilidade. Indicada para motos de média e alta cilindrada."},
-            {id: 106, nome: "Moura Estacionária Clean 100Ah", preco: 1250.00, preco_de: 1350.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura Estacionária 100Ah, para sistemas de energia solar, no-breaks e telecomunicações. Ciclo profundo e longa vida útil."},
-            {id: 107, nome: "Moura M48FD - 48Ah", preco: 399.90, preco_de: 439.90, modelo: "Automotiva", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura 48Ah, excelente custo-benefício para veículos compactos e sedans."},
-            {id: 108, nome: "Moura M80AD - 80Ah", preco: 750.00, preco_de: 820.00, modelo: "Automotiva", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura 80Ah, máxima potência para veículos com alta exigência elétrica."},
-            {id: 109, nome: "Moura Estacionária Clean 60Ah", preco: 890.00, preco_de: 950.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura Estacionária 60Ah, ideal para no-breaks e sistemas de segurança."},
-            {id: 110, nome: "Moura Moto MA7-D - 7Ah", preco: 229.90, preco_de: 259.90, modelo: "Moto", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png", descricaoCompleta: "Bateria Moura para motos 7Ah, confiabilidade e desempenho para o dia a dia."},
-            // O item 101 aparece duplicado no código original, mantendo a duplicidade aqui para consistência
-            {id: 101, nome: "Moura M40FD - 40Ah", preco: 349.90, preco_de: 389.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888", descricaoCompleta: "Bateria Moura 40Ah, ideal para carros populares com baixa demanda elétrica. Livre de manutenção, 18 meses de garantia."},
+        // Catálogo de Peças
+        const catalogoPecas = [
+            { id: 101, nome: "Moura M50ED - 50Ah", preco: 349.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888" },
+            { id: 102, nome: "Moura M60AD - 60Ah", preco: 499.90, modelo: "Automotiva", estoque: 50, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888" },
+            { id: 103, nome: "Moura M70AE - 70Ah", preco: 619.90, modelo: "Automotiva", estoque: 32, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888" },
+            { id: 104, nome: "Moura Moto MA5-D - 5Ah", preco: 189.90, modelo: "Moto", estoque: 21, imagem_url: "https://cdn.shopify.com/s/files/1/0771/3115/3652/files/17303139164879-moura_pack_frontal_a-684b0da176fa5_1.png?v=1762392888" },
+            { id: 105, nome: "Moura Moto MA9-E - 9Ah", preco: 279.90, modelo: "Moto", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png" },
+            { id: 106, nome: "Moura Estacionária Clean 100Ah", preco: 1250.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png" },
         ];
-        
-        let carrinho = []; // Variável global para armazenar os itens do carrinho carregados
 
-        // --- ELEMENTOS DOM ---
-        const itensCarrinhoEl = document.getElementById('itens-carrinho');
-        const valorTotalEl = document.getElementById('valor-total');
-        const carrinhoVazioEl = document.getElementById('carrinho-vazio');
-        const btnFinalizarWhatsAppEl = document.getElementById('btn-finalizar-whatsapp');
+        // Estado Global
+        let carrinho = [];
+        let endereco = {
+            logradouro: '',
+            bairro: '',
+            uf: '',
+            numero: '',
+            complemento: ''
+        };
 
-        // --- FUNÇÕES DE LÓGICA ---
+        // DOM Elements
+        const cepInput = document.getElementById('cep');
+        const btnSearchCep = document.getElementById('btn-search-cep');
+        const cepError = document.getElementById('cep-error');
+        const errorMessage = document.getElementById('error-message');
+        const addressFields = document.getElementById('address-fields');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const subtotalEl = document.getElementById('subtotal');
+        const totalEl = document.getElementById('total');
+        const btnWhatsapp = document.getElementById('btn-whatsapp');
 
+        // Formatar CEP
+        cepInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 8) value = value.slice(0, 8);
+            if (value.length > 5) {
+                value = value.slice(0, 5) + '-' + value.slice(5);
+            }
+            e.target.value = value;
+        });
+
+        // Buscar CEP
+        btnSearchCep.addEventListener('click', buscarCep);
+
+        async function buscarCep() {
+            const cepLimpo = cepInput.value.replace(/\D/g, '');
+
+            if (cepLimpo.length !== 8) {
+                mostrarErro('CEP deve conter 8 dígitos');
+                return;
+            }
+
+            btnSearchCep.disabled = true;
+            btnSearchCep.classList.add('loading');
+            btnSearchCep.innerHTML = '<span class="spinner"></span> Buscando...';
+            cepError.style.display = 'none';
+
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
+                const data = await response.json();
+
+                if (data.erro) {
+                    mostrarErro('CEP não encontrado');
+                    btnSearchCep.disabled = false;
+                    btnSearchCep.classList.remove('loading');
+                    btnSearchCep.textContent = 'Buscar';
+                    return;
+                }
+
+                endereco = {
+                    logradouro: data.logradouro || '',
+                    bairro: data.bairro || '',
+                    uf: data.uf || '',
+                    numero: '',
+                    complemento: ''
+                };
+
+                preencherEndereco();
+                addressFields.style.display = 'block';
+                cepError.style.display = 'none';
+            } catch (error) {
+                mostrarErro('Erro ao buscar CEP. Tente novamente.');
+                console.error('Erro:', error);
+            } finally {
+                btnSearchCep.disabled = false;
+                btnSearchCep.classList.remove('loading');
+                btnSearchCep.textContent = 'Buscar';
+            }
+        }
+
+        function mostrarErro(mensagem) {
+            errorMessage.textContent = mensagem;
+            cepError.style.display = 'flex';
+        }
+
+        function preencherEndereco() {
+            document.getElementById('logradouro').value = endereco.logradouro;
+            document.getElementById('bairro').value = endereco.bairro;
+            document.getElementById('uf').value = endereco.uf;
+        }
+
+        // Atualizar endereço ao digitar
+        document.getElementById('numero').addEventListener('input', (e) => {
+            endereco.numero = e.target.value;
+        });
+
+        document.getElementById('complemento').addEventListener('input', (e) => {
+            endereco.complemento = e.target.value;
+        });
+
+        // Deserializar carrinho da URL
         function deserializarCarrinho() {
             const urlParams = new URLSearchParams(window.location.search);
             const carrinhoSerializado = urlParams.get('carrinho');
-            
+
             if (!carrinhoSerializado) {
-                return; // Não há dados de carrinho na URL
+                return;
             }
-            
+
             try {
-                // 1. Decodifica de Base64
                 const jsonString = atob(carrinhoSerializado);
-                // 2. Converte de JSON para objeto
                 const itensSimples = JSON.parse(jsonString);
-                
-                // 3. Reconstrói o objeto 'carrinho' completo
-                carrinho = itensSimples.map(itemSimples => {
-                    // Busca no catálogo pelo ID. Nota: O catálogo original tem IDs duplicados (101),
-                    // mas para fins de checkout, o primeiro match é suficiente.
-                    const produtoCompleto = catalogoPecas.find(p => p.id === itemSimples.id);
-                    if (produtoCompleto) {
-                        return {
-                            id: produtoCompleto.id,
-                            nome: produtoCompleto.nome,
-                            preco: produtoCompleto.preco,
-                            quantidade: itemSimples.q,
-                            modelo: produtoCompleto.modelo,
-                            imagem_url: produtoCompleto.imagem_url
-                        };
-                    }
-                    return null; // Ignora itens que não estão no catálogo
-                }).filter(item => item !== null);
-                
+
+                carrinho = itensSimples
+                    .map(itemSimples => {
+                        const produtoCompleto = catalogoPecas.find(p => p.id === itemSimples.id);
+                        if (produtoCompleto) {
+                            return {
+                                id: produtoCompleto.id,
+                                nome: produtoCompleto.nome,
+                                preco: produtoCompleto.preco,
+                                quantidade: itemSimples.q,
+                                modelo: produtoCompleto.modelo,
+                                imagem_url: produtoCompleto.imagem_url
+                            };
+                        }
+                        return null;
+                    })
+                    .filter(item => item !== null);
+
+                renderizarCarrinho();
             } catch (e) {
-                console.error('Erro ao deserializar o carrinho da URL:', e);
-                carrinho = []; // Limpa o carrinho em caso de erro
+                console.error('Erro ao deserializar carrinho:', e);
             }
         }
 
+        // Renderizar carrinho
         function renderizarCarrinho() {
-            itensCarrinhoEl.innerHTML = '';
+            if (carrinho.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart">Seu carrinho está vazio</div>';
+                btnWhatsapp.disabled = true;
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
             let total = 0;
 
-            if (carrinho.length === 0) {
-                carrinhoVazioEl.style.display = 'block';
-                btnFinalizarWhatsAppEl.disabled = true;
-            } else {
-                carrinhoVazioEl.style.display = 'none';
-                btnFinalizarWhatsAppEl.disabled = false;
+            carrinho.forEach(item => {
+                const subtotal = item.preco * item.quantidade;
+                total += subtotal;
 
-                carrinho.forEach(item => {
-                    const subtotal = item.preco * item.quantidade;
-                    total += subtotal;
-                    
-                    const itemEl = document.createElement('div');
-                    itemEl.classList.add('item-carrinho');
-                    itemEl.innerHTML = `
-                        <div class="item-info">
-                            <img src="${item.imagem_url}" alt="${item.nome}" class="carrinho-img">
-                            <div>
-                                <span class="item-nome">${item.nome}</span>
-                                <p style="margin: 0; font-size: 0.9em; color: #666;">(${item.modelo})</p>
-                            </div>
-                        </div>
-                        <span class="item-quantidade">${item.quantidade}x</span>
-                        <strong>R$ ${subtotal.toFixed(2).replace('.', ',')}</strong>
-                    `;
-                    itensCarrinhoEl.appendChild(itemEl);
-                });
-            }
-            valorTotalEl.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+                const itemEl = document.createElement('div');
+                itemEl.className = 'cart-item';
+                itemEl.innerHTML = `
+                    <img src="${item.imagem_url}" alt="${item.nome}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.nome}</div>
+                        <div class="cart-item-model">${item.modelo}</div>
+                        <div class="cart-item-qty">Quantidade: ${item.quantidade}x</div>
+                    </div>
+                    <div class="cart-item-price">
+                        <div class="cart-item-subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</div>
+                        <div class="cart-item-unit">R$ ${item.preco.toFixed(2).replace('.', ',')} un.</div>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(itemEl);
+            });
+
+            atualizarTotal(total);
+            btnWhatsapp.disabled = false;
         }
 
-        function finalizarPedidoWhatsApp() {
+        // Atualizar total
+        function atualizarTotal(total) {
+            const formatted = total.toFixed(2).replace('.', ',');
+            subtotalEl.textContent = `R$ ${formatted}`;
+            totalEl.textContent = `R$ ${formatted}`;
+        }
+
+        // Calcular total
+        function calcularTotal() {
+            return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
+        }
+
+        // Finalizar pedido via WhatsApp
+        btnWhatsapp.addEventListener('click', () => {
             if (carrinho.length === 0) {
                 alert('Seu carrinho está vazio.');
                 return;
             }
 
-            const itensMensagem = carrinho.map((i, idx) =>
-                `*${idx + 1}.* ${i.nome} (${i.modelo})\n    *Qtde:* ${i.quantidade} | *Subtotal:* R$ ${(i.preco * i.quantidade).toFixed(2).replace('.', ',')}`
-            ).join('\n');
+            if (!endereco.logradouro || !endereco.numero) {
+                alert('Por favor, preencha o endereço completo.');
+                return;
+            }
 
-            const valorTotalItens = carrinho.reduce((a, i) => a + (i.preco * i.quantidade), 0);
-            
-            const mensagemWhatsapp = encodeURIComponent(
-                `*PEDIDO DE CHECKOUT (VIA LINK DE REDIRECIONAMENTO)*\n\n` +
+            const itensMensagem = carrinho
+                .map((i, idx) => {
+                    const subtotal = (i.preco * i.quantidade).toFixed(2).replace('.', ',');
+                    return `*${idx + 1}.* ${i.nome} (${i.modelo})\n    *Qtde:* ${i.quantidade} | *Subtotal:* R$ ${subtotal}`;
+                })
+                .join('\n');
+
+            const valorTotal = calcularTotal().toFixed(2).replace('.', ',');
+            const enderecoCompleto = `${endereco.logradouro}, ${endereco.numero}${endereco.complemento ? ' - ' + endereco.complemento : ''}\n${endereco.bairro}, ${endereco.uf}`;
+
+            const mensagem = 
+                `*PEDIDO DE CHECKOUT*\n\n` +
                 `*ITENS DO PEDIDO:*\n${itensMensagem}\n\n` +
-                `*TOTAL ESTIMADO DOS PRODUTOS:* R$ ${valorTotalItens.toFixed(2).replace('.', ',')}\n\n` +
-                `*Atenção:* Por favor, confirme o estoque, solicite os dados do cliente e calcule o frete.`
-            );
+                `*TOTAL ESTIMADO DOS PRODUTOS:* R$ ${valorTotal}\n\n` +
+                `*MÉTODO DE PAGAMENTO:* Pagamento após a entrega\n\n` +
+                `*ENDEREÇO DE ENTREGA:*\n${enderecoCompleto}\n\n` +
+                `*Atenção:* Por favor, confirme o estoque, solicite os dados do cliente e calcule o frete.`;
 
-            // Use o mesmo número de WhatsApp do código original
-            const numeroAtendente = '5511960720059'; 
-            const linkWhatsApp = `https://api.whatsapp.com/send?phone=${numeroAtendente}&text=${mensagemWhatsapp}`;
-            
+            const mensagemCodificada = encodeURIComponent(mensagem);
+            const numeroAtendente = '5511960720059';
+            const linkWhatsApp = `https://api.whatsapp.com/send?phone=${numeroAtendente}&text=${mensagemCodificada}`;
+
             window.open(linkWhatsApp, '_blank');
-        }
+        });
 
-        // --- INICIALIZAÇÃO ---
+        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
-            deserializarCarrinho(); // Carrega o carrinho da URL
-            renderizarCarrinho();   // Exibe os itens
-            btnFinalizarWhatsAppEl.addEventListener('click', finalizarPedidoWhatsApp);
+            deserializarCarrinho();
         });
     </script>
 </body>
