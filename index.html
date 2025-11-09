@@ -249,6 +249,16 @@
             transition: all 0.2s;
             background: white;
             min-height: 60px;
+            margin-bottom: 12px; /* Adicionado para espaçamento entre as opções */
+        }
+
+        .payment-option:last-child {
+            margin-bottom: 0;
+        }
+
+        .payment-option.selected {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
 
         .payment-option:active {
@@ -409,10 +419,11 @@
             margin-top: 16px;
         }
 
-        .btn-whatsapp {
+        /* Novo estilo para o botão Prosseguir/Finalizar */
+        .btn-primary {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -429,12 +440,12 @@
             justify-content: center;
         }
 
-        .btn-whatsapp:active:not(:disabled) {
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        .btn-primary:active:not(:disabled) {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
             transform: scale(0.98);
         }
 
-        .btn-whatsapp:disabled {
+        .btn-primary:disabled {
             background: #d1d5db;
             cursor: not-allowed;
             opacity: 0.6;
@@ -446,6 +457,53 @@
             text-align: center;
             margin-top: 10px;
             line-height: 1.4;
+        }
+
+        /* Estilos para a nova tela de resumo */
+        .checkout-step {
+            display: none;
+        }
+
+        .checkout-step.active {
+            display: block;
+        }
+
+        .summary-details {
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 10px 13px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
+
+        .summary-details h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .summary-details p {
+            font-size: 0.9rem;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+
+        .summary-details strong {
+            color: #111827;
+        }
+
+        .summary-details .total-final {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #059669;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 2px solid #059669;
+            display: flex;
+            justify-content: space-between;
         }
 
         /* Responsive */
@@ -498,7 +556,6 @@
             }
 
             .payment-option {
-                padding: 12px;
                 min-height: 56px;
             }
 
@@ -546,130 +603,203 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>Confirmação do Pedido</h1>
-            <p>Revise seus itens e complete o endereço</p>
+        <!-- Passo 1: Confirmação do Pedido e Endereço -->
+        <div id="step-1" class="checkout-step active">
+            <!-- Header -->
+            <div class="header">
+                <h1>Confirmação do Pedido</h1>
+                <p>Revise seus itens e complete o endereço</p>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- Produtos + Resumo Unified Block -->
+                <div class="products-summary-block">
+                    <!-- Produtos Section -->
+                    <div class="products-section">
+                        <div class="products-header">
+                            <span>📦</span> Produtos
+                        </div>
+                        <div id="cart-items-container">
+                            <div class="empty-cart">Seu carrinho está vazio</div>
+                        </div>
+                    </div>
+
+                    <!-- Resumo Section -->
+                    <div class="summary-section">
+                        <div class="summary-header">
+                            <span>📊</span> Resumo
+                        </div>
+                        <div class="summary-row">
+                            <span>Subtotal (Produtos)</span>
+                            <span id="subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Complemento (Envio/Instalação)</span>
+                            <span id="complemento-valor">R$ 0,00</span>
+                        </div>
+                        <div class="summary-divider">
+                            <div class="summary-total">
+                                <span>Total a Pagar Agora</span>
+                                <span id="total-agora">R$ 0,00</span>
+                            </div>
+                        </div>
+                        <p class="summary-note" style="text-align: right; margin-top: 5px;">
+                            *O valor dos produtos será pago apenas na entrega.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Método de Pagamento Card -->
+                <div class="card">
+                    <div class="card-header green">
+                        <span>💳</span> Método de Pagamento
+                    </div>
+                    <div class="card-content">
+                        <label class="payment-option selected" id="payment-option-cash">
+                            <input type="radio" name="payment" value="cash" checked>
+                            <div class="payment-option-text">
+                                <h3>Pagamento após a entrega</h3>
+                                <p>O valor dos produtos será pago somente quando você receber.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Opções de Envio Card -->
+                <div class="card">
+                    <div class="card-header purple">
+                        <span>📍</span> Opções de Envio
+                    </div>
+                    <div class="card-content">
+                        <!-- CEP Input -->
+                        <div class="form-group">
+                            <label for="cep">CEP</label>
+                            <div class="cep-input-group">
+                                <input 
+                                    type="text" 
+                                    id="cep" 
+                                    placeholder="00000-000" 
+                                    maxlength="9"
+                                    inputmode="numeric"
+                                >
+                                <button id="btn-search-cep">Buscar</button>
+                            </div>
+                        </div>
+
+                        <!-- Error Alert -->
+                        <div id="cep-error" class="alert error" style="display: none;">
+                            <span class="alert-icon">⚠️</span>
+                            <span id="error-message"></span>
+                        </div>
+
+                        <!-- Address Fields -->
+                        <div id="address-fields" class="address-fields" style="display: none;">
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="logradouro">Logradouro</label>
+                                    <input type="text" id="logradouro" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bairro">Bairro</label>
+                                    <input type="text" id="bairro" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="uf">Estado (UF)</label>
+                                    <input type="text" id="uf" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="numero">Número *</label>
+                                    <input type="text" id="numero" placeholder="Ex: 123" inputmode="numeric">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="complemento">Complemento</label>
+                                <input type="text" id="complemento" placeholder="Ex: Apto 101">
+                            </div>
+
+                            <!-- NOVAS OPÇÕES DE COMPLEMENTO/ENVIO -->
+                            <div class="form-group" id="complemento-options-container">
+                                <label>Complemento (Envio)</label>
+                                <label class="payment-option" data-valor="35.90" data-link="LINK_ENVIO_35_90">
+                                    <input type="radio" name="complemento-option" value="envio" checked>
+                                    <div class="payment-option-text">
+                                        <h3>Envio - Receba Amanhã</h3>
+                                        <p>Custo: R$ 35,90</p>
+                                    </div>
+                                </label>
+                                <label class="payment-option" data-valor="43.90" data-link="LINK_ENVIO_INSTALACAO_43_90">
+                                    <input type="radio" name="complemento-option" value="envio-instalacao">
+                                    <div class="payment-option-text">
+                                        <h3>Envio + Instalação - Receba Amanhã</h3>
+                                        <p>Custo: R$ 43,90</p>
+                                    </div>
+                                </label>
+                            </div>
+                            <!-- FIM NOVAS OPÇÕES DE COMPLEMENTO/ENVIO -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botão Prosseguir -->
+                <button id="btn-prosseguir" class="btn-primary" disabled>
+                    Prosseguir
+                </button>
+                <p class="summary-note">
+                    Ao prosseguir, você será levado para a tela de resumo e pagamento do complemento.
+                </p>
+            </div>
         </div>
 
-        <!-- Main Grid -->
-        <div class="main-grid">
-            <!-- Produtos + Resumo Unified Block -->
-            <div class="products-summary-block">
-                <!-- Produtos Section -->
-                <div class="products-section">
-                    <div class="products-header">
-                        <span>📦</span> Produtos
-                    </div>
-                    <div id="cart-items-container">
-                        <div class="empty-cart">Seu carrinho está vazio</div>
-                    </div>
-                </div>
-
-                <!-- Resumo Section -->
-                <div class="summary-section">
-                    <div class="summary-header">
-                        <span>📊</span> Resumo
-                    </div>
-                    <div class="summary-row">
-                        <span>Subtotal</span>
-                        <span id="subtotal">R$ 0,00</span>
-                    </div>
-                    <div class="summary-row">
-                        <span>Frete</span>
-                        <span>A calcular</span>
-                    </div>
-                    <div class="summary-divider">
-                        <div class="summary-total">
-                            <span>Total</span>
-                            <span id="total">R$ 0,00</span>
-                        </div>
-                    </div>
-                </div>
+        <!-- Passo 2: Resumo e Finalização -->
+        <div id="step-2" class="checkout-step">
+            <div class="header">
+                <h1>Resumo do Pedido</h1>
+                <p>Confirme os detalhes e finalize o pagamento do complemento.</p>
             </div>
 
-            <!-- Método de Pagamento Card -->
-            <div class="card">
-                <div class="card-header green">
-                    <span>💳</span> Método de Pagamento
+            <div class="main-grid">
+                <!-- Detalhes do Pedido -->
+                <div class="summary-details">
+                    <h2>Itens do Pedido</h2>
+                    <div id="summary-products-list"></div>
                 </div>
-                <div class="card-content">
-                    <label class="payment-option">
-                        <input type="radio" name="payment" value="cash" checked>
-                        <div class="payment-option-text">
-                            <h3>Pagamento após a entrega</h3>
-                            <p>Pague quando receber o produto</p>
-                        </div>
-                    </label>
+
+                <!-- Detalhes do Endereço -->
+                <div class="summary-details">
+                    <h2>Endereço de Entrega</h2>
+                    <p><strong>CEP:</strong> <span id="summary-cep"></span></p>
+                    <p><strong>Endereço:</strong> <span id="summary-address"></span></p>
+                    <p><strong>Bairro:</strong> <span id="summary-bairro"></span></p>
+                    <p><strong>Estado:</strong> <span id="summary-uf"></span></p>
+                    <p><strong>Complemento:</strong> <span id="summary-complemento-text"></span></p>
                 </div>
+
+                <!-- Detalhes do Complemento -->
+                <div class="summary-details">
+                    <h2>Complemento Selecionado</h2>
+                    <p><strong>Opção:</strong> <span id="summary-complemento-option"></span></p>
+                    <div class="total-final">
+                        <span>Total a Pagar Agora:</span>
+                        <span id="summary-total-agora">R$ 0,00</span>
+                    </div>
+                    <p class="summary-note" style="text-align: left; margin-top: 10px;">
+                        *O valor dos produtos (<span id="summary-subtotal-produtos">R$ 0,00</span>) será pago apenas na entrega.
+                    </p>
+                </div>
+
+                <!-- Botão Finalizar -->
+                <button id="btn-finalizar" class="btn-primary">
+                    Finalizar (Pagar <span id="btn-finalizar-valor">R$ 0,00</span>)
+                </button>
+                <p class="summary-note">
+                    Você será redirecionado para o link de pagamento do complemento.
+                </p>
             </div>
-
-            <!-- Opções de Envio Card -->
-            <div class="card">
-                <div class="card-header purple">
-                    <span>📍</span> Opções de Envio
-                </div>
-                <div class="card-content">
-                    <!-- CEP Input -->
-                    <div class="form-group">
-                        <label for="cep">CEP</label>
-                        <div class="cep-input-group">
-                            <input 
-                                type="text" 
-                                id="cep" 
-                                placeholder="00000-000" 
-                                maxlength="9"
-                                inputmode="numeric"
-                            >
-                            <button id="btn-search-cep">Buscar</button>
-                        </div>
-                    </div>
-
-                    <!-- Error Alert -->
-                    <div id="cep-error" class="alert error" style="display: none;">
-                        <span class="alert-icon">⚠️</span>
-                        <span id="error-message"></span>
-                    </div>
-
-                    <!-- Address Fields -->
-                    <div id="address-fields" class="address-fields" style="display: none;">
-                        <div class="form-group-row">
-                            <div class="form-group">
-                                <label for="logradouro">Logradouro</label>
-                                <input type="text" id="logradouro" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label for="bairro">Bairro</label>
-                                <input type="text" id="bairro" disabled>
-                            </div>
-                        </div>
-
-                        <div class="form-group-row">
-                            <div class="form-group">
-                                <label for="uf">Estado (UF)</label>
-                                <input type="text" id="uf" disabled>
-                            </div>
-                            <div class="form-group">
-                                <label for="numero">Número *</label>
-                                <input type="text" id="numero" placeholder="Ex: 123" inputmode="numeric">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="complemento">Complemento</label>
-                            <input type="text" id="complemento" placeholder="Ex: Apto 101">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botão WhatsApp -->
-            <button id="btn-whatsapp" class="btn-whatsapp" disabled>
-                Finalizar via WhatsApp
-            </button>
-            <p class="summary-note">
-                Você será redirecionado para o WhatsApp para confirmar seu pedido
-            </p>
         </div>
     </div>
 
@@ -684,17 +814,34 @@
             { id: 106, nome: "Moura Estacionária Clean 100Ah", preco: 1250.00, modelo: "Estacionária", estoque: 21, imagem_url: "https://i.imgur.com/M7q1z0Z.png" },
         ];
 
+        // Dados das opções de complemento (Envio/Instalação)
+        const complementoOptions = {
+            'envio': {
+                valor: 35.90,
+                descricao: 'Envio - Receba Amanhã',
+                linkPagamento: 'LINK_ENVIO_35_90' // Placeholder
+            },
+            'envio-instalacao': {
+                valor: 43.90,
+                descricao: 'Envio + Instalação - Receba Amanhã',
+                linkPagamento: 'LINK_ENVIO_INSTALACAO_43_90' // Placeholder
+            }
+        };
+
         // Estado Global
         let carrinho = [];
         let endereco = {
+            cep: '',
             logradouro: '',
             bairro: '',
             uf: '',
             numero: '',
             complemento: ''
         };
+        let complementoSelecionado = 'envio'; // Padrão
 
-        // DOM Elements
+        // DOM Elements - Step 1
+        const step1 = document.getElementById('step-1');
         const cepInput = document.getElementById('cep');
         const btnSearchCep = document.getElementById('btn-search-cep');
         const cepError = document.getElementById('cep-error');
@@ -702,8 +849,39 @@
         const addressFields = document.getElementById('address-fields');
         const cartItemsContainer = document.getElementById('cart-items-container');
         const subtotalEl = document.getElementById('subtotal');
-        const totalEl = document.getElementById('total');
-        const btnWhatsapp = document.getElementById('btn-whatsapp');
+        const complementoValorEl = document.getElementById('complemento-valor');
+        const totalAgoraEl = document.getElementById('total-agora');
+        const btnProsseguir = document.getElementById('btn-prosseguir');
+        const complementoOptionsContainer = document.getElementById('complemento-options-container');
+
+        // DOM Elements - Step 2
+        const step2 = document.getElementById('step-2');
+        const summaryProductsList = document.getElementById('summary-products-list');
+        const summaryCep = document.getElementById('summary-cep');
+        const summaryAddress = document.getElementById('summary-address');
+        const summaryBairro = document.getElementById('summary-bairro');
+        const summaryUf = document.getElementById('summary-uf');
+        const summaryComplementoText = document.getElementById('summary-complemento-text');
+        const summaryComplementoOption = document.getElementById('summary-complemento-option');
+        const summaryTotalAgora = document.getElementById('summary-total-agora');
+        const summarySubtotalProdutos = document.getElementById('summary-subtotal-produtos');
+        const btnFinalizar = document.getElementById('btn-finalizar');
+        const btnFinalizarValor = document.getElementById('btn-finalizar-valor');
+
+        // Funções de Formatação
+        const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
+
+        // Lógica de Seleção de Complemento
+        complementoOptionsContainer.addEventListener('change', (e) => {
+            if (e.target.name === 'complemento-option') {
+                complementoSelecionado = e.target.value;
+                document.querySelectorAll('#complemento-options-container .payment-option').forEach(label => {
+                    label.classList.remove('selected');
+                });
+                e.target.closest('.payment-option').classList.add('selected');
+                atualizarTotais();
+            }
+        });
 
         // Formatar CEP
         cepInput.addEventListener('input', (e) => {
@@ -713,12 +891,17 @@
                 value = value.slice(0, 5) + '-' + value.slice(5);
             }
             e.target.value = value;
+            endereco.cep = value;
+            validarFormulario();
         });
 
         // Buscar CEP
         btnSearchCep.addEventListener('click', buscarCep);
         cepInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') buscarCep();
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Previne o envio do formulário
+                buscarCep();
+            }
         });
 
         async function buscarCep() {
@@ -740,18 +923,16 @@
 
                 if (data.erro) {
                     mostrarErro('CEP não encontrado');
-                    btnSearchCep.disabled = false;
-                    btnSearchCep.classList.remove('loading');
-                    btnSearchCep.textContent = 'Buscar';
                     return;
                 }
 
                 endereco = {
+                    cep: cepInput.value,
                     logradouro: data.logradouro || '',
                     bairro: data.bairro || '',
                     uf: data.uf || '',
-                    numero: '',
-                    complemento: ''
+                    numero: document.getElementById('numero').value, // Mantém o número se já digitado
+                    complemento: document.getElementById('complemento').value // Mantém o complemento se já digitado
                 };
 
                 preencherEndereco();
@@ -769,12 +950,18 @@
                 btnSearchCep.disabled = false;
                 btnSearchCep.classList.remove('loading');
                 btnSearchCep.textContent = 'Buscar';
+                validarFormulario();
             }
         }
 
         function mostrarErro(mensagem) {
             errorMessage.textContent = mensagem;
             cepError.style.display = 'flex';
+            addressFields.style.display = 'none';
+            btnSearchCep.disabled = false;
+            btnSearchCep.classList.remove('loading');
+            btnSearchCep.textContent = 'Buscar';
+            validarFormulario();
         }
 
         function preencherEndereco() {
@@ -786,11 +973,24 @@
         // Atualizar endereço ao digitar
         document.getElementById('numero').addEventListener('input', (e) => {
             endereco.numero = e.target.value;
+            validarFormulario();
         });
 
         document.getElementById('complemento').addEventListener('input', (e) => {
             endereco.complemento = e.target.value;
+            validarFormulario();
         });
+
+        // Validação do Formulário
+        function validarFormulario() {
+            const numeroValido = endereco.numero.trim() !== '';
+            const cepValido = endereco.cep.replace(/\D/g, '').length === 8;
+            const enderecoCompleto = endereco.logradouro.trim() !== '' && endereco.bairro.trim() !== '' && endereco.uf.trim() !== '';
+            const carrinhoNaoVazio = carrinho.length > 0;
+
+            const formValido = cepValido && enderecoCompleto && numeroValido && carrinhoNaoVazio;
+            btnProsseguir.disabled = !formValido;
+        }
 
         // Deserializar carrinho da URL
         function deserializarCarrinho() {
@@ -832,16 +1032,16 @@
         function renderizarCarrinho() {
             if (carrinho.length === 0) {
                 cartItemsContainer.innerHTML = '<div class="empty-cart">Seu carrinho está vazio</div>';
-                btnWhatsapp.disabled = true;
+                validarFormulario();
                 return;
             }
 
             cartItemsContainer.innerHTML = '';
-            let total = 0;
+            let totalProdutos = 0;
 
             carrinho.forEach(item => {
                 const subtotal = item.preco * item.quantidade;
-                total += subtotal;
+                totalProdutos += subtotal;
 
                 const itemEl = document.createElement('div');
                 itemEl.className = 'cart-item';
@@ -853,69 +1053,88 @@
                         <div class="cart-item-qty">Qtde: ${item.quantidade}x</div>
                     </div>
                     <div class="cart-item-price">
-                        <div class="cart-item-subtotal">R$ ${subtotal.toFixed(2).replace('.', ',')}</div>
-                        <div class="cart-item-unit">R$ ${item.preco.toFixed(2).replace('.', ',')} un.</div>
+                        <div class="cart-item-subtotal">${formatCurrency(subtotal)}</div>
+                        <div class="cart-item-unit">${formatCurrency(item.preco)} un.</div>
                     </div>
                 `;
                 cartItemsContainer.appendChild(itemEl);
             });
 
-            atualizarTotal(total);
-            btnWhatsapp.disabled = false;
+            atualizarTotais(totalProdutos);
+            validarFormulario();
         }
 
-        // Atualizar total
-        function atualizarTotal(total) {
-            const formatted = total.toFixed(2).replace('.', ',');
-            subtotalEl.textContent = `R$ ${formatted}`;
-            totalEl.textContent = `R$ ${formatted}`;
-        }
-
-        // Calcular total
-        function calcularTotal() {
+        // Calcular total de produtos
+        function calcularTotalProdutos() {
             return carrinho.reduce((total, item) => total + item.preco * item.quantidade, 0);
         }
 
-        // Finalizar pedido via WhatsApp
-        btnWhatsapp.addEventListener('click', () => {
-            if (carrinho.length === 0) {
-                alert('Seu carrinho está vazio.');
-                return;
+        // Atualizar totais
+        function atualizarTotais(totalProdutos = calcularTotalProdutos()) {
+            const valorComplemento = complementoOptions[complementoSelecionado].valor;
+            const totalAgora = valorComplemento;
+
+            subtotalEl.textContent = formatCurrency(totalProdutos);
+            complementoValorEl.textContent = formatCurrency(valorComplemento);
+            totalAgoraEl.textContent = formatCurrency(totalAgora);
+
+            // Atualiza o botão Prosseguir/Finalizar
+            btnFinalizarValor.textContent = formatCurrency(totalAgora);
+        }
+
+        // Lógica de Transição de Passo
+        btnProsseguir.addEventListener('click', () => {
+            if (btnProsseguir.disabled) return;
+
+            // 1. Preencher Resumo
+            const totalProdutos = calcularTotalProdutos();
+            const complementoData = complementoOptions[complementoSelecionado];
+            const totalAgora = complementoData.valor;
+
+            // Produtos
+            summaryProductsList.innerHTML = carrinho.map(item => {
+                const subtotal = item.preco * item.quantidade;
+                return `<p>${item.quantidade}x <strong>${item.nome}</strong> (${item.modelo}) - ${formatCurrency(subtotal)}</p>`;
+            }).join('');
+
+            // Endereço
+            summaryCep.textContent = endereco.cep;
+            summaryAddress.textContent = `${endereco.logradouro}, ${endereco.numero}`;
+            summaryBairro.textContent = endereco.bairro;
+            summaryUf.textContent = endereco.uf;
+            summaryComplementoText.textContent = endereco.complemento || 'N/A';
+
+            // Totais
+            summaryComplementoOption.textContent = `${complementoData.descricao} (${formatCurrency(complementoData.valor)})`;
+            summaryTotalAgora.textContent = formatCurrency(totalAgora);
+            summarySubtotalProdutos.textContent = formatCurrency(totalProdutos);
+            btnFinalizarValor.textContent = formatCurrency(totalAgora);
+
+            // 2. Transição de Tela
+            step1.classList.remove('active');
+            step2.classList.add('active');
+            window.scrollTo(0, 0); // Volta para o topo
+        });
+
+        // Lógica de Finalização (Redirecionamento)
+        btnFinalizar.addEventListener('click', () => {
+            const linkPagamento = complementoOptions[complementoSelecionado].linkPagamento;
+            
+            // AQUI VOCÊ DEVE INSERIR A LÓGICA PARA REDIRECIONAR PARA O LINK DE PAGAMENTO
+            // O link de pagamento deve ser configurado no objeto `complementoOptions`
+            if (linkPagamento && linkPagamento.startsWith('http')) {
+                window.location.href = linkPagamento;
+            } else {
+                alert(`Redirecionamento para pagamento não configurado. Link placeholder: ${linkPagamento}`);
+                console.error('Link de pagamento não configurado para a opção:', complementoSelecionado);
             }
-
-            if (!endereco.logradouro || !endereco.numero) {
-                alert('Por favor, preencha o endereço completo.');
-                return;
-            }
-
-            const itensMensagem = carrinho
-                .map((i, idx) => {
-                    const subtotal = (i.preco * i.quantidade).toFixed(2).replace('.', ',');
-                    return `*${idx + 1}.* ${i.nome} (${i.modelo})\n    *Qtde:* ${i.quantidade} | *Subtotal:* R$ ${subtotal}`;
-                })
-                .join('\n');
-
-            const valorTotal = calcularTotal().toFixed(2).replace('.', ',');
-            const enderecoCompleto = `${endereco.logradouro}, ${endereco.numero}${endereco.complemento ? ' - ' + endereco.complemento : ''}\n${endereco.bairro}, ${endereco.uf}`;
-
-            const mensagem = 
-                `*PEDIDO DE CHECKOUT*\n\n` +
-                `*ITENS DO PEDIDO:*\n${itensMensagem}\n\n` +
-                `*TOTAL ESTIMADO DOS PRODUTOS:* R$ ${valorTotal}\n\n` +
-                `*MÉTODO DE PAGAMENTO:* Pagamento após a entrega\n\n` +
-                `*ENDEREÇO DE ENTREGA:*\n${enderecoCompleto}\n\n` +
-                `*Atenção:* Por favor, confirme o estoque, solicite os dados do cliente e calcule o frete.`;
-
-            const mensagemCodificada = encodeURIComponent(mensagem);
-            const numeroAtendente = '5511960720059';
-            const linkWhatsApp = `https://api.whatsapp.com/send?phone=${numeroAtendente}&text=${mensagemCodificada}`;
-
-            window.open(linkWhatsApp, '_blank');
         });
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             deserializarCarrinho();
+            // Garante que a opção de complemento padrão esteja visualmente selecionada
+            document.querySelector(`label[data-valor="35.90"]`).classList.add('selected');
         });
     </script>
 </body>
