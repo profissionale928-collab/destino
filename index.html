@@ -90,53 +90,165 @@
         }
 
         /* Bloco Produtos + Resumo */
-        .products-header-collapsible {
+        /* Bloco Produtos */
+        .products-section {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb; /* Linha mais fina */
+        }
+
+        .products-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+        }
+
+        /* Resumo Section */
+        .summary-section {
+            padding: 16px;
+            background: #f9fafb; /* Fundo mais clean */
+        }
+
+        .summary-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            padding: 16px;
-            border-bottom: 2px solid #f3f4f6;
-            font-size: 1rem;
+            padding: 0;
+            font-size: 0.95rem;
             font-weight: 600;
-            color: #111827;
-            background: #f8fafc; /* Levemente diferente do corpo */
+            color: #64748b;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .products-header-collapsible:hover {
-            background: #f1f5f9;
-        }
-
-        .products-header-collapsible .products-header-title {
+        .summary-header-title {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .products-header-collapsible .arrow {
+        .summary-header .arrow {
             transition: transform 0.3s ease;
             font-size: 1.2rem;
             color: #6b7280;
         }
 
-        .products-header-collapsible.collapsed .arrow {
+        .summary-header.collapsed .arrow {
             transform: rotate(-90deg);
         }
 
-        .products-content-collapsible {
+        .summary-content-collapsible {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
 
-        .products-content-collapsible.expanded {
-            max-height: 1000px; /* Valor grande o suficiente para caber o conteúdo */
+        .summary-content-collapsible.expanded {
+            max-height: 500px; /* Valor grande o suficiente para caber o conteúdo */
             transition: max-height 0.5s ease-in;
         }
 
-        .products-section {
-            padding: 16px;
-            border-bottom: 2px solid #f3f4f6;
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .summary-row span:first-child {
+            color: #6b7280;
+        }
+
+        .summary-row span:last-child {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .summary-divider {
+            border-top: 1px solid #e2e8f0; /* Linha mais fina */
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .summary-total span:first-child {
+            color: #111827;
+        }
+
+        .summary-total span:last-child {
+            color: #2563eb;
+        }
+
+        /* Refatoração Geral de Design */
+        body {
+            background: #f4f7f9; /* Fundo mais claro e suave */
+        }
+
+        .card {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+        }
+
+        .card-header {
+            padding: 16px; /* Padding maior */
+            font-size: 1.1rem; /* Fonte maior */
+            font-weight: 700; /* Mais negrito */
+        }
+
+        .card-header.blue {
+            background: #3b82f6; /* Azul sólido */
+        }
+
+        .card-header.green {
+            background: #10b981; /* Verde sólido */
+        }
+
+        .card-header.purple {
+            background: #8b5cf6; /* Roxo sólido */
+        }
+
+        .btn-primary {
+            background: #3b82f6; /* Azul sólido */
+            font-size: 1.1rem; /* Fonte maior */
+        }
+
+        .btn-primary:active:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .payment-option.selected {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            background: #eff6ff;
+        }
+
+        .payment-option:hover {
+            border-color: #93c5fd;
+            background: #f9fafb;
+        }
+
+        .cep-input-group button {
+            background: #3b82f6;
+        }
+
+        .cep-input-group button:active:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .summary-details .total-final {
+            color: #10b981; /* Verde mais vibrante */
+            border-top: 2px solid #10b981;
         }
         .products-summary-block {
             background: white;
@@ -667,47 +779,47 @@
 
             <!-- Main Grid -->
             <div class="main-grid">
-                <!-- Produtos + Resumo Unified Block -->
-                <div class="products-summary-block">
-                    <!-- Produtos Section - Collapsible -->
-                    <div id="products-header-collapsible" class="products-header-collapsible collapsed">
-                        <div class="products-header-title">
-                            <span>📦</span> Produtos (<span id="products-count">0</span> itens)
-                        </div>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div id="products-content-collapsible" class="products-content-collapsible">
+<!-- Produtos + Resumo Unified Block -->
+                    <div class="products-summary-block">
+                        <!-- Produtos Section - Visível por padrão -->
                         <div class="products-section">
+                            <div class="products-header">
+                                <span>📦</span> Produtos
+                            </div>
                             <div id="cart-items-container">
                                 <div class="empty-cart">Seu carrinho está vazio</div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Resumo Section -->
-                    <div class="summary-section">
-                        <div class="summary-header">
-                            <span>📊</span> Resumo
-                        </div>
-                        <div class="summary-row">
-                            <span>Subtotal (Produtos)</span>
-                            <span id="subtotal">R$ 0,00</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Complemento (Envio/Instalação)</span>
-                            <span id="complemento-valor">R$ 0,00</span>
-                        </div>
-                        <div class="summary-divider">
-                            <div class="summary-total">
-                                <span>Total a Pagar Agora</span>
-                                <span id="total-agora">R$ 0,00</span>
+                        <!-- Resumo Section - Collapsible -->
+                        <div class="summary-section">
+                            <div id="summary-header-collapsible" class="summary-header collapsed">
+                                <div class="summary-header-title">
+                                    <span>📊</span> Resumo do Pedido
+                                </div>
+                                <span class="arrow">▼</span>
+                            </div>
+                            <div id="summary-content-collapsible" class="summary-content-collapsible">
+                                <div class="summary-row">
+                                    <span>Subtotal (Produtos)</span>
+                                    <span id="subtotal">R$ 0,00</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Complemento (Envio/Instalação)</span>
+                                    <span id="complemento-valor">R$ 0,00</span>
+                                </div>
+                                <div class="summary-divider">
+                                    <div class="summary-total">
+                                        <span>Total a Pagar Agora</span>
+                                        <span id="total-agora">R$ 0,00</span>
+                                    </div>
+                                </div>
+                                <p class="summary-note" style="text-align: right; margin-top: 5px;">
+                                    *O valor dos produtos será pago apenas na entrega.
+                                </p>
                             </div>
                         </div>
-                        <p class="summary-note" style="text-align: right; margin-top: 5px;">
-                            *O valor dos produtos será pago apenas na entrega.
-                        </p>
                     </div>
-                </div>
 
                 <!-- Método de Pagamento Card -->
                 <div class="card">
@@ -900,8 +1012,8 @@
         let complementoSelecionado = null;
 
         // DOM Elements - Step 1
-        const productsHeaderCollapsible = document.getElementById('products-header-collapsible');
-        const productsContentCollapsible = document.getElementById('products-content-collapsible');
+        const summaryHeaderCollapsible = document.getElementById('summary-header-collapsible');
+        const summaryContentCollapsible = document.getElementById('summary-content-collapsible');
         const step1 = document.getElementById('step-1');
         const cepInput = document.getElementById('cep');
         const btnSearchCep = document.getElementById('btn-search-cep');
@@ -1148,11 +1260,8 @@
 
         // Renderizar carrinho
         function renderizarCarrinho() {
-            const productsCountEl = document.getElementById('products-count');
-            
             if (carrinho.length === 0) {
                 cartItemsContainer.innerHTML = '<div class="empty-cart">Seu carrinho está vazio</div>';
-                productsCountEl.textContent = '0';
                 validarFormulario();
                 return;
             }
@@ -1181,7 +1290,6 @@
                 cartItemsContainer.appendChild(itemEl);
             });
 
-            productsCountEl.textContent = carrinho.length;
             atualizarTotais(totalProdutos);
             validarFormulario();
         }
@@ -1245,10 +1353,10 @@
             }
         });
 
-        // Lógica de Recolher/Expandir Produtos
-        productsHeaderCollapsible.addEventListener('click', () => {
-            const isExpanded = productsContentCollapsible.classList.toggle('expanded');
-            productsHeaderCollapsible.classList.toggle('collapsed', !isExpanded);
+        // Lógica de Recolher/Expandir Resumo
+        summaryHeaderCollapsible.addEventListener('click', () => {
+            const isExpanded = summaryContentCollapsible.classList.toggle('expanded');
+            summaryHeaderCollapsible.classList.toggle('collapsed', !isExpanded);
         });
 
         // Inicializar
@@ -1257,11 +1365,9 @@
             setupComplementoSelection();
             validarFormulario();
             
-            // Abrir o bloco de produtos se o carrinho não estiver vazio (opcional, mas bom para UX)
-            if (carrinho.length > 0) {
-                productsContentCollapsible.classList.add('expanded');
-                productsHeaderCollapsible.classList.remove('collapsed');
-            }
+            // Abrir o bloco de resumo por padrão
+            summaryContentCollapsible.classList.add('expanded');
+            summaryHeaderCollapsible.classList.remove('collapsed');
         });
     </script>
 </body>
