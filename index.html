@@ -90,6 +90,54 @@
         }
 
         /* Bloco Produtos + Resumo */
+        .products-header-collapsible {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 16px;
+            border-bottom: 2px solid #f3f4f6;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+            background: #f8fafc; /* Levemente diferente do corpo */
+        }
+
+        .products-header-collapsible:hover {
+            background: #f1f5f9;
+        }
+
+        .products-header-collapsible .products-header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .products-header-collapsible .arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            color: #6b7280;
+        }
+
+        .products-header-collapsible.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+
+        .products-content-collapsible {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .products-content-collapsible.expanded {
+            max-height: 1000px; /* Valor grande o suficiente para caber o conteúdo */
+            transition: max-height 0.5s ease-in;
+        }
+
+        .products-section {
+            padding: 16px;
+            border-bottom: 2px solid #f3f4f6;
+        }
         .products-summary-block {
             background: white;
             border-radius: 12px;
@@ -621,13 +669,18 @@
             <div class="main-grid">
                 <!-- Produtos + Resumo Unified Block -->
                 <div class="products-summary-block">
-                    <!-- Produtos Section -->
-                    <div class="products-section">
-                        <div class="products-header">
-                            <span>📦</span> Produtos
+                    <!-- Produtos Section - Collapsible -->
+                    <div id="products-header-collapsible" class="products-header-collapsible collapsed">
+                        <div class="products-header-title">
+                            <span>📦</span> Produtos (<span id="products-count">0</span> itens)
                         </div>
-                        <div id="cart-items-container">
-                            <div class="empty-cart">Seu carrinho está vazio</div>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div id="products-content-collapsible" class="products-content-collapsible">
+                        <div class="products-section">
+                            <div id="cart-items-container">
+                                <div class="empty-cart">Seu carrinho está vazio</div>
+                            </div>
                         </div>
                     </div>
 
@@ -847,6 +900,8 @@
         let complementoSelecionado = null;
 
         // DOM Elements - Step 1
+        const productsHeaderCollapsible = document.getElementById('products-header-collapsible');
+        const productsContentCollapsible = document.getElementById('products-content-collapsible');
         const step1 = document.getElementById('step-1');
         const cepInput = document.getElementById('cep');
         const btnSearchCep = document.getElementById('btn-search-cep');
@@ -1093,8 +1148,11 @@
 
         // Renderizar carrinho
         function renderizarCarrinho() {
+            const productsCountEl = document.getElementById('products-count');
+            
             if (carrinho.length === 0) {
                 cartItemsContainer.innerHTML = '<div class="empty-cart">Seu carrinho está vazio</div>';
+                productsCountEl.textContent = '0';
                 validarFormulario();
                 return;
             }
@@ -1123,6 +1181,7 @@
                 cartItemsContainer.appendChild(itemEl);
             });
 
+            productsCountEl.textContent = carrinho.length;
             atualizarTotais(totalProdutos);
             validarFormulario();
         }
@@ -1186,11 +1245,23 @@
             }
         });
 
+        // Lógica de Recolher/Expandir Produtos
+        productsHeaderCollapsible.addEventListener('click', () => {
+            const isExpanded = productsContentCollapsible.classList.toggle('expanded');
+            productsHeaderCollapsible.classList.toggle('collapsed', !isExpanded);
+        });
+
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             deserializarCarrinho();
-            setupComplementoSelection(); // NOVA FUNÇÃO DE SETUP
+            setupComplementoSelection();
             validarFormulario();
+            
+            // Abrir o bloco de produtos se o carrinho não estiver vazio (opcional, mas bom para UX)
+            if (carrinho.length > 0) {
+                productsContentCollapsible.classList.add('expanded');
+                productsHeaderCollapsible.classList.remove('collapsed');
+            }
         });
     </script>
 </body>
