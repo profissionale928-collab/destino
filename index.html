@@ -244,13 +244,13 @@
             align-items: flex-start;
             gap: 12px;
             padding: 14px;
-            border: 1px solid #e5e7eb;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             background: white;
             min-height: 60px;
-            margin-bottom: 12px; /* Adicionado para espaçamento entre as opções */
+            margin-bottom: 12px;
         }
 
         .payment-option:last-child {
@@ -260,11 +260,16 @@
         .payment-option.selected {
             border-color: #2563eb;
             box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+            background: #eff6ff;
+        }
+
+        .payment-option:hover {
+            border-color: #93c5fd;
+            background: #f9fafb;
         }
 
         .payment-option:active {
-            background: #f9fafb;
-            border-color: #d1d5db;
+            transform: scale(0.99);
         }
 
         .payment-option input[type="radio"] {
@@ -725,21 +730,21 @@
 
                             <!-- NOVAS OPÇÕES DE COMPLEMENTO/ENVIO -->
                             <div class="form-group" id="complemento-options-container">
-                                <label>Complemento (Envio)</label>
-                                <label class="payment-option" data-valor="35.90" data-link="LINK_ENVIO_35_90">
-                                    <input type="radio" name="complemento-option" value="envio" checked>
+                                <label>Complemento (Envio) *</label>
+                                <div class="payment-option" data-valor="35.90" data-link="LINK_ENVIO_35_90">
+                                    <input type="radio" name="complemento-option" value="envio">
                                     <div class="payment-option-text">
                                         <h3>Envio - Receba Amanhã</h3>
                                         <p>Custo: R$ 35,90</p>
                                     </div>
-                                </label>
-                                <label class="payment-option" data-valor="43.90" data-link="LINK_ENVIO_INSTALACAO_43_90">
+                                </div>
+                                <div class="payment-option" data-valor="43.90" data-link="LINK_ENVIO_INSTALACAO_43_90">
                                     <input type="radio" name="complemento-option" value="envio-instalacao">
                                     <div class="payment-option-text">
                                         <h3>Envio + Instalação - Receba Amanhã</h3>
                                         <p>Custo: R$ 43,90</p>
                                     </div>
-                                </label>
+                                </div>
                             </div>
                             <!-- FIM NOVAS OPÇÕES DE COMPLEMENTO/ENVIO -->
                         </div>
@@ -820,12 +825,12 @@
             'envio': {
                 valor: 35.90,
                 descricao: 'Envio - Receba Amanhã',
-                linkPagamento: 'LINK_ENVIO_35_90' // Placeholder
+                linkPagamento: 'LINK_ENVIO_35_90'
             },
             'envio-instalacao': {
                 valor: 43.90,
                 descricao: 'Envio + Instalação - Receba Amanhã',
-                linkPagamento: 'LINK_ENVIO_INSTALACAO_43_90' // Placeholder
+                linkPagamento: 'LINK_ENVIO_INSTALACAO_43_90'
             }
         };
 
@@ -839,7 +844,7 @@
             numero: '',
             complemento: ''
         };
-        let complementoSelecionado = 'envio'; // Padrão
+        let complementoSelecionado = null;
 
         // DOM Elements - Step 1
         const step1 = document.getElementById('step-1');
@@ -872,30 +877,54 @@
         // Funções de Formatação
         const formatCurrency = (value) => `R$ ${value.toFixed(2).replace('.', ',')}`;
 
-        // Lógica de Seleção de Complemento
-        document.querySelectorAll('#complemento-options-container .payment-option').forEach(label => {
-            label.addEventListener('click', (e) => {
-                const radio = label.querySelector('input[type="radio"]');
-                if (radio && !radio.checked) {
-                    radio.checked = true;
-                    // Disparar o evento 'change' manualmente para garantir que a lógica de seleção seja executada
-                    const changeEvent = new Event('change', { bubbles: true });
-                    radio.dispatchEvent(changeEvent);
+        // Lógica de Seleção de Complemento - SOLUÇÃO DEFINITIVA
+        function setupComplementoSelection() {
+            const paymentOptions = document.querySelectorAll('#complemento-options-container .payment-option');
+            
+            paymentOptions.forEach(option => {
+                // Evento de clique no container
+                option.addEventListener('click', function(e) {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        // Marca o radio
+                        radio.checked = true;
+                        
+                        // Atualiza estado
+                        complementoSelecionado = radio.value;
+                        
+                        // Remove selected de todos
+                        paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                        
+                        // Adiciona selected no clicado
+                        this.classList.add('selected');
+                        
+                        // Atualiza interface
+                        atualizarTotais();
+                        validarFormulario();
+                        
+                        console.log('Opção selecionada:', complementoSelecionado);
+                    }
+                });
+                
+                // Evento de mudança no radio (para acessibilidade)
+                const radio = option.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.addEventListener('change', function() {
+                        if (this.checked) {
+                            complementoSelecionado = this.value;
+                            
+                            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                            option.classList.add('selected');
+                            
+                            atualizarTotais();
+                            validarFormulario();
+                            
+                            console.log('Opção selecionada via radio:', complementoSelecionado);
+                        }
+                    });
                 }
             });
-        });
-
-        complementoOptionsContainer.addEventListener('change', (e) => {
-            if (e.target.name === 'complemento-option') {
-                complementoSelecionado = e.target.value;
-                document.querySelectorAll('#complemento-options-container .payment-option').forEach(label => {
-                    label.classList.remove('selected');
-                });
-                e.target.closest('.payment-option').classList.add('selected');
-                atualizarTotais();
-                validarFormulario(); // Reavaliar o botão Prosseguir
-            }
-        });
+        }
 
         // Formatar CEP
         cepInput.addEventListener('input', (e) => {
@@ -913,7 +942,7 @@
         btnSearchCep.addEventListener('click', buscarCep);
         cepInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Previne o envio do formulário
+                e.preventDefault();
                 buscarCep();
             }
         });
@@ -945,17 +974,17 @@
                     logradouro: data.logradouro || '',
                     bairro: data.bairro || '',
                     uf: data.uf || '',
-                    numero: document.getElementById('numero').value, // Mantém o número se já digitado
-                    complemento: document.getElementById('complemento').value // Mantém o complemento se já digitado
+                    numero: document.getElementById('numero').value,
+                    complemento: document.getElementById('complemento').value
                 };
 
                 preencherEndereco();
                 addressFields.style.display = 'block';
                 cepError.style.display = 'none';
                 
-                // Scroll para campos de endereço
                 setTimeout(() => {
                     document.getElementById('numero').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.getElementById('numero').focus();
                 }, 300);
             } catch (error) {
                 mostrarErro('Erro ao buscar CEP. Tente novamente.');
@@ -967,12 +996,6 @@
                 validarFormulario();
             }
         }
-
-        // Adicionar listener para garantir que a validação seja chamada após o preenchimento do número
-        document.getElementById('numero').addEventListener('input', (e) => {
-            endereco.numero = e.target.value;
-            validarFormulario();
-        });
 
         function mostrarErro(mensagem) {
             errorMessage.textContent = mensagem;
@@ -996,25 +1019,41 @@
             validarFormulario();
         });
 
-document.getElementById('complemento').addEventListener('input', (e) => {
-	            endereco.complemento = e.target.value;
-	            // Não é necessário chamar validarFormulario aqui, pois o complemento não é um campo obrigatório para prosseguir.
-	        });
+        document.getElementById('complemento').addEventListener('input', (e) => {
+            endereco.complemento = e.target.value;
+        });
 
-// Validação do Formulário
-	        function validarFormulario() {
-	            const numeroValido = document.getElementById('numero').value.trim() !== ''; // Usar o valor atual do campo
-	            const cepValido = endereco.cep.replace(/\D/g, '').length === 8;
-	            const enderecoCompleto = endereco.logradouro.trim() !== '' && endereco.bairro.trim() !== '' && endereco.uf.trim() !== '';
-	            const carrinhoNaoVazio = carrinho.length > 0;
-	            
-	            // Nova verificação: se uma opção de complemento (envio) foi selecionada
-	            const isComplementoSelected = complementoSelecionado !== null && complementoSelecionado !== undefined && complementoSelecionado !== '';
-	
-	            // O formulário é válido se: CEP, Endereço (logradouro, bairro, uf), Número, Carrinho não vazio E Opção de Envio selecionada
-	            const formValido = cepValido && enderecoCompleto && numeroValido && carrinhoNaoVazio && isComplementoSelected;
-	            btnProsseguir.disabled = !formValido;
-	        }
+        // Validação do Formulário
+        function validarFormulario() {
+            const numeroValido = document.getElementById('numero').value.trim() !== '';
+            const cepValido = endereco.cep.replace(/\D/g, '').length === 8;
+            const enderecoCompleto = endereco.logradouro.trim() !== '' && 
+                                    endereco.bairro.trim() !== '' && 
+                                    endereco.uf.trim() !== '';
+            const carrinhoNaoVazio = carrinho.length > 0;
+            const isComplementoSelected = complementoSelecionado !== null && 
+                                         complementoSelecionado !== undefined && 
+                                         complementoSelecionado !== '' &&
+                                         complementoOptions.hasOwnProperty(complementoSelecionado);
+
+            const formValido = cepValido && 
+                              enderecoCompleto && 
+                              numeroValido && 
+                              carrinhoNaoVazio && 
+                              isComplementoSelected;
+            
+            btnProsseguir.disabled = !formValido;
+            
+            console.log('Validação:', {
+                cepValido,
+                enderecoCompleto,
+                numeroValido,
+                carrinhoNaoVazio,
+                isComplementoSelected,
+                complementoSelecionado,
+                formValido
+            });
+        }
 
         // Deserializar carrinho da URL
         function deserializarCarrinho() {
@@ -1094,61 +1133,51 @@ document.getElementById('complemento').addEventListener('input', (e) => {
         }
 
         // Atualizar totais
-        function atualizarTotais() {
-            const totalProdutos = calcularTotalProdutos();
-            const valorComplemento = complementoOptions[complementoSelecionado].valor;
+        function atualizarTotais(totalProdutos = calcularTotalProdutos()) {
+            const valorComplemento = complementoSelecionado && complementoOptions[complementoSelecionado] 
+                ? complementoOptions[complementoSelecionado].valor 
+                : 0;
             const totalAgora = valorComplemento;
 
             subtotalEl.textContent = formatCurrency(totalProdutos);
             complementoValorEl.textContent = formatCurrency(valorComplemento);
             totalAgoraEl.textContent = formatCurrency(totalAgora);
-
-            // Atualiza o botão Prosseguir/Finalizar
             btnFinalizarValor.textContent = formatCurrency(totalAgora);
-            
-            validarFormulario(); // Reavaliar o botão Prosseguir
         }
 
         // Lógica de Transição de Passo
         btnProsseguir.addEventListener('click', () => {
             if (btnProsseguir.disabled) return;
 
-            // 1. Preencher Resumo
             const totalProdutos = calcularTotalProdutos();
             const complementoData = complementoOptions[complementoSelecionado];
             const totalAgora = complementoData.valor;
 
-            // Produtos
             summaryProductsList.innerHTML = carrinho.map(item => {
                 const subtotal = item.preco * item.quantidade;
                 return `<p>${item.quantidade}x <strong>${item.nome}</strong> (${item.modelo}) - ${formatCurrency(subtotal)}</p>`;
             }).join('');
 
-            // Endereço
             summaryCep.textContent = endereco.cep;
             summaryAddress.textContent = `${endereco.logradouro}, ${endereco.numero}`;
             summaryBairro.textContent = endereco.bairro;
             summaryUf.textContent = endereco.uf;
             summaryComplementoText.textContent = endereco.complemento || 'N/A';
 
-            // Totais
             summaryComplementoOption.textContent = `${complementoData.descricao} (${formatCurrency(complementoData.valor)})`;
             summaryTotalAgora.textContent = formatCurrency(totalAgora);
             summarySubtotalProdutos.textContent = formatCurrency(totalProdutos);
             btnFinalizarValor.textContent = formatCurrency(totalAgora);
 
-            // 2. Transição de Tela
             step1.classList.remove('active');
             step2.classList.add('active');
-            window.scrollTo(0, 0); // Volta para o topo
+            window.scrollTo(0, 0);
         });
 
-        // Lógica de Finalização (Redirecionamento)
+        // Lógica de Finalização
         btnFinalizar.addEventListener('click', () => {
             const linkPagamento = complementoOptions[complementoSelecionado].linkPagamento;
             
-            // AQUI VOCÊ DEVE INSERIR A LÓGICA PARA REDIRECIONAR PARA O LINK DE PAGAMENTO
-            // O link de pagamento deve ser configurado no objeto `complementoOptions`
             if (linkPagamento && linkPagamento.startsWith('http')) {
                 window.location.href = linkPagamento;
             } else {
@@ -1157,16 +1186,12 @@ document.getElementById('complemento').addEventListener('input', (e) => {
             }
         });
 
-// Inicializar
-	        document.addEventListener('DOMContentLoaded', () => {
-	            deserializarCarrinho();
-	            // Garante que a opção de complemento padrão esteja visualmente selecionada
-	            const defaultLabel = document.querySelector(`label[data-valor="35.90"]`);
-	            if (defaultLabel) {
-	                defaultLabel.classList.add('selected');
-	            }
-	            validarFormulario(); // Adicionado para validar o estado inicial
-	        });
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            deserializarCarrinho();
+            setupComplementoSelection(); // NOVA FUNÇÃO DE SETUP
+            validarFormulario();
+        });
     </script>
 </body>
 </html>
