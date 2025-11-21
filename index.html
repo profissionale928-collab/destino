@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1093,7 +1094,8 @@ document.getElementById('complemento').addEventListener('input', (e) => {
         }
 
         // Atualizar totais
-        function atualizarTotais(totalProdutos = calcularTotalProdutos()) {
+        function atualizarTotais() {
+            const totalProdutos = calcularTotalProdutos();
             const valorComplemento = complementoOptions[complementoSelecionado].valor;
             const totalAgora = valorComplemento;
 
@@ -1103,6 +1105,8 @@ document.getElementById('complemento').addEventListener('input', (e) => {
 
             // Atualiza o botão Prosseguir/Finalizar
             btnFinalizarValor.textContent = formatCurrency(totalAgora);
+            
+            validarFormulario(); // Reavaliar o botão Prosseguir
         }
 
         // Lógica de Transição de Passo
