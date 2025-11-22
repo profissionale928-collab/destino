@@ -1462,19 +1462,27 @@
             if (carrinhoParam) {
                 try {
                     const decoded = JSON.parse(atob(carrinhoParam));
-                    carrinho = decoded.map(item => ({
-                        ...item,
-                        nome: `Produto ${item.id}`,
-                        modelo: `Modelo ${item.id}`,
-                        preco: 100.00 + item.id,
-                        imagem_url: `https://via.placeholder.com/70x70?text=P${item.id}`
-                    }));
+                    // Usar um catálogo simulado para obter detalhes do produto
+                    const catalogoSimulado = {
+                        101: { nome: 'Smart TV 50" 4K', modelo: 'QLED 5000', preco: 1500.00, imagem_url: 'https://via.placeholder.com/70x70?text=TV' },
+                        103: { nome: 'Soundbar Premium', modelo: 'AudioMax 300', preco: 500.00, imagem_url: 'https://via.placeholder.com/70x70?text=SB' },
+                        // Adicione mais produtos conforme necessário
+                    };
+
+                    carrinho = decoded.map(item => {
+                        const detalhes = catalogoSimulado[item.id] || { nome: `Produto ${item.id}`, modelo: `Modelo ${item.id}`, preco: 100.00 + item.id, imagem_url: `https://via.placeholder.com/70x70?text=P${item.id}` };
+                        return {
+                            ...item,
+                            ...detalhes,
+                            quantidade: item.q // 'q' é a quantidade no JSON da URL
+                        };
+                    });
                 } catch (e) {
                     console.error('Erro ao deserializar carrinho:', e);
                     carrinho = [];
                 }
             } else {
-                // Carrinho de teste
+                // Carrinho de teste (apenas para fallback se não houver parâmetro na URL)
                 carrinho = [{
                     id: 101,
                     quantidade: 2,
@@ -1633,26 +1641,26 @@
 
             // Resumo Step 2
             summaryProductsList.innerHTML = carrinho.map(item => {
-                const subtotal = item.preco * item.quantidade;
-                return `<p>${item.quantidade}x <strong>${item.nome}</strong> (${item.modelo}) - ${formatCurrency(subtotal)}</p>`;
+                        const subtotal = item.preco * item.quantidade;
+                        return `<p>${item.quantidade}x <strong>${item.nome}</strong> (${item.modelo}) - ${formatCurrency(subtotal)}</p>`;
             }).join('');
 
             // Sidebar Desktop
             sidebarProductsList.innerHTML = carrinho.map(item => {
-                const subtotal = item.preco * item.quantidade;
-                return `
-                    <div class="product-item">
-                        <div class="product-image">
-                            <img src="${item.imagem_url}" alt="${item.nome}">
-                        </div>
-                        <div class="product-details">
-                            <div class="product-name">${item.nome}</div>
-                            <div class="product-variant">${item.modelo}</div>
-                            <div class="product-quantity">Qtde: ${item.quantidade}</div>
-                        </div>
-                        <div class="product-price">${formatCurrency(subtotal)}</div>
-                    </div>
-                `;
+                        const subtotal = item.preco * item.quantidade;
+                        return `
+                            <div class="product-item">
+                                <div class="product-image">
+                                    <img src="${item.imagem_url}" alt="${item.nome}">
+                                </div>
+                                <div class="product-details">
+                                    <div class="product-name">${item.nome}</div>
+                                    <div class="product-variant">${item.modelo}</div>
+                                    <div class="product-quantity">Qtde: ${item.quantidade}</div>
+                                </div>
+                                <div class="product-price">${formatCurrency(subtotal)}</div>
+                            </div>
+                        `;
             }).join('');
 
             atualizarTotais(totalProdutos);
