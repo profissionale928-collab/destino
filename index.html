@@ -1463,40 +1463,37 @@
                 try {
                     const decoded = JSON.parse(atob(carrinhoParam));
                     // Usar um catálogo simulado para obter detalhes do produto
-                    const catalogoSimulado = {
-                        101: { nome: 'Smart TV 50" 4K', modelo: 'QLED 5000', preco: 1500.00, imagem_url: 'https://via.placeholder.com/70x70?text=TV' },
-                        103: { nome: 'Soundbar Premium', modelo: 'AudioMax 300', preco: 500.00, imagem_url: 'https://via.placeholder.com/70x70?text=SB' },
-                        // Adicione mais produtos conforme necessário
-                    };
-
-                    carrinho = decoded.map(item => {
-                        const detalhes = catalogoSimulado[item.id] || { nome: `Produto ${item.id}`, modelo: `Modelo ${item.id}`, preco: 100.00 + item.id, imagem_url: `https://via.placeholder.com/70x70?text=P${item.id}` };
-                        return {
-                            ...item,
-                            ...detalhes,
-                            quantidade: item.q // 'q' é a quantidade no JSON da URL
-                        };
-                    });
+                    // O novo formato de URL deve conter o array de produtos completo,
+                    // incluindo nome, preco, imagem_url e quantidade (q).
+                    carrinho = decoded.map(item => ({
+                        id: item.id,
+                        nome: item.nome,
+                        modelo: item.modelo,
+                        preco: item.preco,
+                        imagem_url: item.imagem_url,
+                        quantidade: item.q // 'q' é a quantidade no JSON da URL
+                    }));
                 } catch (e) {
                     console.error('Erro ao deserializar carrinho:', e);
                     carrinho = [];
                 }
             } else {
                 // Carrinho de teste (apenas para fallback se não houver parâmetro na URL)
+                // Usando o formato de dados do anexo para o fallback
                 carrinho = [{
                     id: 101,
                     quantidade: 2,
-                    nome: 'Smart TV 50" 4K',
-                    modelo: 'QLED 5000',
-                    preco: 1500.00,
-                    imagem_url: 'https://via.placeholder.com/70x70?text=TV'
+                    nome: 'Moura M50ED - 50Ah',
+                    modelo: 'Automotiva',
+                    preco: 349.90,
+                    imagem_url: 'https://via.placeholder.com/70x70?text=M50'
                 }, {
                     id: 103,
                     quantidade: 1,
-                    nome: 'Soundbar Premium',
-                    modelo: 'AudioMax 300',
-                    preco: 500.00,
-                    imagem_url: 'https://via.placeholder.com/70x70?text=SB'
+                    nome: 'Moura M70AE - 70Ah',
+                    modelo: 'Automotiva',
+                    preco: 619.90,
+                    imagem_url: 'https://via.placeholder.com/70x70?text=M70'
                 }];
             }
             renderizarCarrinho();
